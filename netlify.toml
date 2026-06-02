@@ -25,6 +25,12 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Data files (photo metadata JSON) must not be cached — they change as photos are added
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 # Redirect bare domain to www (or remove this block to do the opposite)
 # Netlify handles the canonical domain automatically once set in the dashboard.
 
