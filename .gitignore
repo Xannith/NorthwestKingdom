@@ -1,0 +1,6 @@
+# Local conversion workspace — copy of Google Drive source files
+governance/_source/
+
+# Python bytecode
+__pycache__/
+*.pyc
