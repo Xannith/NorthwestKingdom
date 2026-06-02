@@ -1,0 +1,36 @@
+# Netlify deployment configuration for northwestkingdom.com
+# Plain static site — no build step required.
+
+[build]
+  publish = "."
+  command = ""
+
+# Security and performance headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer-when-downgrade"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Cache static assets aggressively, HTML never
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Redirect bare domain to www (or remove this block to do the opposite)
+# Netlify handles the canonical domain automatically once set in the dashboard.
+
+# Friendly 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
+  force = false
