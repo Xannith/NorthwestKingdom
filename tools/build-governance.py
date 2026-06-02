@@ -449,7 +449,7 @@ PAGE_TEMPLATE = """\
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} — MLC Governance — Northwest Kingdom</title>
   <meta name="description" content="{description}">
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="public">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -531,7 +531,7 @@ INDEX_TEMPLATE = """\
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Governance Documents — Northwest Kingdom</title>
   <meta name="description" content="MLC governing documents and policies: Bylaws, Covenants and Restrictions, Articles of Incorporation, and all adopted policies.">
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="public">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -576,7 +576,7 @@ INDEX_TEMPLATE = """\
       <div id="gov-doc-listing">
 
         <h2 id="governing-documents">Governing Documents</h2>
-        <p class="text-muted" style="margin-top:-0.5rem;margin-bottom:1rem;">
+        <p class="text-muted" class="heading-desc">
           Foundational documents that establish the legal and operating framework for the Miccosukee Land Co-op.
         </p>
         <div class="gov-doc-list" aria-labelledby="governing-documents">
@@ -586,7 +586,7 @@ INDEX_TEMPLATE = """\
         <hr class="divider">
 
         <h2 id="policies">Policies</h2>
-        <p class="text-muted" style="margin-top:-0.5rem;margin-bottom:1rem;">
+        <p class="text-muted" class="heading-desc">
           Adopted MLC policies, procedures, and guidelines, listed alphabetically.
         </p>
         <div class="gov-doc-list" aria-labelledby="policies">
@@ -1140,16 +1140,16 @@ def main():
     (OUT_DIR / "README.md").write_text(GOVERNANCE_README, encoding='utf-8')
     print(f"  -> governance/README.md")
 
-    # Append governance CSS to main.css (only if not already present)
-    css_path = REPO_ROOT / "assets" / "css" / "main.css"
+    # Append governance CSS to styles.css (only if not already present)
+    css_path = REPO_ROOT / "assets" / "css" / "styles.css"
     css_text = css_path.read_text(encoding='utf-8')
     marker = "/* Governance document pages */"
     if marker not in css_text and "gov-search" not in css_text:
         with open(css_path, 'a', encoding='utf-8') as f:
             f.write("\n" + GOVERNANCE_CSS)
-        print(f"  -> assets/css/main.css (appended governance styles)")
+        print(f"  -> assets/css/styles.css (appended governance styles)")
     else:
-        print(f"  -> assets/css/main.css (governance styles already present, skipped)")
+        print(f"  -> assets/css/styles.css (governance styles already present, skipped)")
 
     # Summary
     print()
