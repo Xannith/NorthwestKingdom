@@ -1211,3 +1211,29 @@ tr:hover td { background: var(--color-surface-alt); }
   font-size: 0.9rem;
   margin: 0;
 }
+
+/* --- Gather embed (community calendar iframe) -------------------- */
+.gather-embed {
+  margin-bottom: var(--spacing-xl);
+}
+
+.gather-embed iframe {
+  display: block;
+  width: 100%;
+  height: 80vh;
+  min-height: 420px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+}
+
+.gather-fallback {
+  margin-top: var(--spacing-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+@media print {
+  .gather-embed { display: none; }
+}
