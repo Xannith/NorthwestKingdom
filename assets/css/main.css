@@ -1036,3 +1036,178 @@ tr:hover td { background: var(--color-surface-alt); }
   body { background: #fff; color: #000; }
   a { color: #000; }
 }
+
+
+/* ============================================================
+   Governance document pages
+   ============================================================ */
+
+.doc-pdf-notice {
+  background: var(--color-accent-bg);
+  border: 1px solid var(--color-accent-light);
+  border-radius: var(--radius);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  font-size: 0.88rem;
+}
+
+.doc-pdf-notice--ocr {
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning);
+}
+
+.doc-content {
+  max-width: var(--content-width);
+}
+
+.doc-content h1 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.doc-content h2 {
+  font-size: 1.2rem;
+  color: var(--color-primary-dark);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 0.25rem;
+}
+
+.doc-content h3 {
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.doc-content p { line-height: 1.7; }
+
+.doc-content ol,
+.doc-content ul {
+  padding-left: 1.6em;
+  margin-bottom: var(--spacing-md);
+}
+
+.doc-content li { margin-bottom: 0.35em; line-height: 1.65; }
+
+.doc-content table { font-size: 0.88rem; }
+
+/* ── Governance index ─────────────────────────────────────── */
+
+.gov-doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.gov-doc-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--spacing-md) var(--spacing-lg);
+  transition: box-shadow 0.15s;
+}
+
+.gov-doc-item:hover { box-shadow: var(--shadow-sm); }
+
+.gov-doc-item__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.gov-doc-item__title:hover { text-decoration: underline; }
+
+.gov-doc-item__desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ── Search box ───────────────────────────────────────────── */
+
+.gov-search {
+  position: relative;
+  margin-bottom: var(--spacing-xl);
+  max-width: 540px;
+}
+
+.gov-search__input {
+  font-size: 1rem;
+  padding: 0.6em 1em;
+}
+
+.gov-search__results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.gov-search__result {
+  display: block;
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background 0.1s;
+}
+
+.gov-search__result:last-child { border-bottom: none; }
+.gov-search__result:hover      { background: var(--color-primary-bg); }
+
+.gov-search__result-title {
+  display: block;
+  font-weight: 600;
+  color: var(--color-link);
+  margin-bottom: 0.15rem;
+}
+
+.gov-search__result-cat {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border-radius: 20px;
+  padding: 1px 7px;
+  margin-bottom: 0.3rem;
+}
+
+.gov-search__result-snippet {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.gov-search__result-snippet mark {
+  background: #fff3cd;
+  color: var(--color-text);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.gov-search__no-results {
+  padding: var(--spacing-lg);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
