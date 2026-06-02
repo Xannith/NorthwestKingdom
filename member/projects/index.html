@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body data-section="member">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Member navigation"></nav>
+
+  <main id="main-content">
+    <div class="container page-wrapper">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/member/dashboard/">Dashboard</a></li>
+          <li><span aria-current="page">Projects</span></li>
+        </ol>
+      </nav>
+
+      <div class="auth-gate" role="alert">
+        <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+        <div class="auth-gate-body">
+          <h3>Authentication required</h3>
+          <p>Member login required. <a href="/login/">Log in</a></p>
+        </div>
+      </div>
+
+      <div class="page-header">
+        <span class="section-badge section-badge--member">Member area</span>
+        <h1>Projects</h1>
+        <p>Active, proposed, completed, and deferred neighborhood projects. Track progress and coordinate work.</p>
+      </div>
+
+      <div class="section-nav" aria-label="Project states">
+        <h3>Browse by status</h3>
+        <ul>
+          <li><a href="/member/projects/active/">Active <span class="tag tag--active">Active</span></a></li>
+          <li><a href="/member/projects/proposed/">Proposed <span class="tag tag--proposed">Proposed</span></a></li>
+          <li><a href="/member/projects/completed/">Completed <span class="tag tag--completed">Completed</span></a></li>
+          <li><a href="/member/projects/deferred/">Deferred <span class="tag tag--deferred">Deferred</span></a></li>
+          <li><a href="/member/projects/project-templates/">Templates</a></li>
+        </ul>
+      </div>
+
+      <h2>Active projects</h2>
+      <p class="text-muted">No active projects currently listed. Add projects using the <a href="/member/projects/project-templates/">project template</a>.</p>
+
+      <h2>Recently proposed</h2>
+      <p class="text-muted">No proposed projects currently listed.</p>
+
+      <h2>About project tracking</h2>
+      <p>
+        Each project record includes a title, status, lead resident or contact, description, timeline,
+        related documents, and a decision log entry if the project was formally approved or deferred.
+      </p>
+      <p>
+        Projects move through states: <span class="tag tag--proposed">Proposed</span>
+        &rarr; <span class="tag tag--active">Active</span>
+        &rarr; <span class="tag tag--completed">Completed</span>
+        (or <span class="tag tag--deferred">Deferred</span> if postponed).
+      </p>
+
+    </div>
+  </main>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

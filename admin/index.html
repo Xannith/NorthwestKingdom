@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body data-section="admin">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Admin navigation"></nav>
+
+  <main id="main-content">
+    <div class="container page-wrapper">
+      <div class="auth-gate" role="alert">
+        <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+        <div class="auth-gate-body">
+          <h3>Administrator access required</h3>
+          <p>
+            This area requires administrator authentication, which is not yet implemented.
+            See <a href="/SECURITY_NOTES.md"><code>SECURITY_NOTES.md</code></a> for the roadmap.
+            <a href="/login/">Log in</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="page-header">
+        <span class="section-badge section-badge--admin">Admin area</span>
+        <h1>Site Administration</h1>
+        <p>User management, content review, document management, audit log, and site maintenance tools.</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <a href="/admin/users/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128101;</span>
+          <div class="card-title">Users</div>
+          <p class="card-desc">Manage member accounts, review access requests, assign roles.</p>
+        </a>
+
+        <a href="/admin/access-roles/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128275;</span>
+          <div class="card-title">Access Roles</div>
+          <p class="card-desc">Define and manage role permissions: member, content maintainer, records steward, admin.</p>
+        </a>
+
+        <a href="/admin/content-review/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128065;</span>
+          <div class="card-title">Content Review</div>
+          <p class="card-desc">Review and approve submitted content before publication.</p>
+        </a>
+
+        <a href="/admin/document-management/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128193;</span>
+          <div class="card-title">Documents</div>
+          <p class="card-desc">Upload, organize, and manage documents. Ensure no private documents are in public assets.</p>
+        </a>
+
+        <a href="/admin/photo-review/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128247;</span>
+          <div class="card-title">Photos</div>
+          <p class="card-desc">Review submitted photos, verify permissions, approve or reject for public/member display.</p>
+        </a>
+
+        <a href="/admin/calendar-approvals/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128197;</span>
+          <div class="card-title">Calendar Approvals</div>
+          <p class="card-desc">Review and approve submitted event requests for the public and member calendars.</p>
+        </a>
+
+        <a href="/admin/alternate-current-manager/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128240;</span>
+          <div class="card-title">Alternate Current</div>
+          <p class="card-desc">Upload new issues, manage archive metadata, update issue index and search.</p>
+        </a>
+
+        <a href="/admin/backups/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128190;</span>
+          <div class="card-title">Backups</div>
+          <p class="card-desc">Backup schedule, status, storage configuration, and restore documentation.</p>
+        </a>
+
+        <a href="/admin/audit-log/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128221;</span>
+          <div class="card-title">Audit Log</div>
+          <p class="card-desc">Log of significant site actions: content changes, access grants, document uploads.</p>
+        </a>
+
+        <a href="/admin/mlc-reference-manager/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128220;</span>
+          <div class="card-title">MLC Reference Manager</div>
+          <p class="card-desc">Update MLC reference document links and verify external links are current.</p>
+        </a>
+
+        <a href="/admin/search-index-manager/" class="card card--link">
+          <span class="card-icon" aria-hidden="true">&#128269;</span>
+          <div class="card-title">Search Index Manager</div>
+          <p class="card-desc">Manage public, member, and admin search indexes. Verify no private content leaks into public search.</p>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
