@@ -731,7 +731,7 @@ CSS_DEPTH_MAP = {}
 
 def asset_path(file_path):
     depth = file_path.count('/') - (1 if file_path.startswith('/') else 0)
-    return '/assets/css/main.css'
+    return '/assets/css/styles.css'
 
 def build_breadcrumb(crumbs, current_title):
     if not crumbs:
@@ -759,7 +759,7 @@ def generate_page(path, title, section, crumbs, stub_note):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} — Northwest Kingdom</title>
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="{section}">
   <a class="skip-link" href="#main-content">Skip to main content</a>

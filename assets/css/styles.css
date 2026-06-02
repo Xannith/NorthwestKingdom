@@ -1,60 +1,80 @@
 /* ============================================================
-   Northwest Kingdom — main.css
-   Earthy, forested, community-centered design system
+   Northwest Kingdom — styles.css
+   Single source of truth for all site styling.
+   To change the seasonal or holiday theme, edit the CSS custom
+   properties in the :root block below — colors, fonts, and
+   spacing all live there. No other file needs to change.
    ============================================================ */
 
-/* --- Custom properties ------------------------------------ */
+/* ============================================================
+   SEASONAL / HOLIDAY THEME VARIABLES
+   Edit these to restyle the entire site for a new season.
+   The defaults are the base earthy-forest palette.
+   ============================================================ */
 :root {
-  --color-bg:           #f4f1ec;
-  --color-surface:      #ffffff;
-  --color-surface-alt:  #f9f7f4;
+  /* Page & surface backgrounds */
+  --color-bg:           #f4f1ec;   /* page background */
+  --color-surface:      #ffffff;   /* cards, panels */
+  --color-surface-alt:  #f9f7f4;   /* subtle inset areas */
   --color-border:       #d6d0c4;
   --color-border-light: #e8e4dc;
 
+  /* Text */
   --color-text:         #2c2920;
   --color-text-muted:   #6b6158;
   --color-text-light:   #9a9188;
 
-  --color-primary:      #2e5c28;
-  --color-primary-dark: #1d3d1a;
+  /* Primary brand color — header, nav, buttons, links */
+  --color-primary:      #2e5c28;   /* forest green */
+  --color-primary-dark: #1d3d1a;   /* nav bar, header bar */
   --color-primary-light:#4a7c42;
-  --color-primary-bg:   #eaf2e8;
+  --color-primary-bg:   #eaf2e8;   /* tinted highlight areas */
 
-  --color-accent:       #7a6548;
+  /* Accent — secondary highlights, footer details */
+  --color-accent:       #7a6548;   /* earthy brown */
   --color-accent-light: #a08a6a;
   --color-accent-bg:    #f5efe6;
 
+  /* Member area tint */
   --color-member:       #2a5a78;
   --color-member-dark:  #1a3d54;
   --color-member-bg:    #e8f2f9;
 
+  /* Admin area tint */
   --color-admin:        #5c2a2a;
   --color-admin-dark:   #3d1a1a;
   --color-admin-bg:     #f9e8e8;
 
+  /* Warnings / notices */
   --color-warning:      #7a5a00;
   --color-warning-bg:   #fdf5dc;
   --color-warning-border:#e0c840;
 
+  /* Links */
   --color-link:         #2e5c28;
   --color-link-hover:   #1d3d1a;
 
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  /* Typography */
+  --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-heading: Georgia, 'Times New Roman', serif;
-  --font-mono: 'Courier New', Courier, monospace;
+  --font-mono:    'Courier New', Courier, monospace;
 
+  /* Shape */
   --radius:    6px;
   --radius-sm: 3px;
   --radius-lg: 10px;
 
+  /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
   --shadow:    0 2px 8px rgba(0,0,0,0.10);
   --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
 
+  /* Layout */
   --max-width:     1100px;
   --content-width: 780px;
   --nav-height:    56px;
 
+  /* Spacing scale */
   --spacing-xs:  0.25rem;
   --spacing-sm:  0.5rem;
   --spacing-md:  1rem;
@@ -1237,3 +1257,75 @@ tr:hover td { background: var(--color-surface-alt); }
 @media print {
   .gather-embed { display: none; }
 }
+
+/* ============================================================
+   Utility additions (extracted from former inline styles)
+   ============================================================ */
+
+/* Spacing extras */
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.ml-sm { margin-left:   var(--spacing-sm); }
+
+/* Full-width button modifier */
+.btn--full { width: 100%; }
+
+/* Subtitle paragraph directly under an h2 heading */
+.heading-desc {
+  margin-top: -0.5rem;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Dimmed / not-yet-available placeholder content */
+.placeholder-dim { opacity: 0.5; }
+
+/* Alternate Current: single-issue card layout */
+.ac-issue-layout {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+}
+
+.ac-issue-layout .ac-issue-cover-img {
+  width: 120px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+}
+
+/* Archive filter row */
+.filter-row {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-field          { margin: 0; min-width: 120px; }
+.filter-field--wide    { margin: 0; min-width: 160px; }
+
+/* Two-column tight gap variant */
+.two-col--tight { gap: var(--spacing-md); }
+
+/* Placeholder photo / image box */
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-light);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+/* Login layout: top-aligned variant (e.g. request-access form) */
+.login-layout--top {
+  align-items: flex-start;
+  padding-top: 3rem;
+}
+
+/* Wider login box variant */
+.login-box--wide { max-width: 520px; }
