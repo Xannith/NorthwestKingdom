@@ -1,0 +1,5 @@
+{
+  "_schema_version": "1.0",
+  "_note": "Public photo metadata for the NWK gallery. Do NOT include contact emails, private addresses, or any personal information not explicitly cleared for public display. Each entry must have status='published' and visibility='public' to appear in the public gallery. This file is served publicly.",
+  "photos": []
+}

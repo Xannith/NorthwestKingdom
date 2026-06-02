@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Land and Nature Photos — Northwest Kingdom</title>
+  <title>Land and Nature Photos -- Northwest Kingdom</title>
+  <meta name="description" content="Photos of NWK land, forest, wildlife, and natural features.">
   <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="public">
@@ -15,24 +16,44 @@
     <div class="container page-wrapper">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
-            <li><a href="/">Home</a></li>
-            <li><a href="/public/photos/">Photos</a></li>
-            <li><span aria-current="page">Land and Nature Photos</span></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/public/photos/">Photos</a></li>
+          <li><span aria-current="page">Land and Nature</span></li>
         </ol>
       </nav>
 
-
       <div class="page-header">
-        <span class="section-badge section-badge--public">Public</span>
         <h1>Land and Nature Photos</h1>
-        <p>Photos of NWK land, forest, wildlife, and natural features.</p>
+        <p>Photos of NWK land, forest, trails, wildlife, and natural features.</p>
       </div>
 
-      <div class="notice notice--info">
-        <strong>Content placeholder.</strong>
-        This page is part of the Northwest Kingdom site framework.
-        Content will be added as records, documents, and information are organized.
+      <div class="section-nav" aria-label="Photo galleries">
+        <h3>All galleries</h3>
+        <ul>
+          <li><a href="/public/photos/events.html">Events</a></li>
+          <li><strong>Land and Nature</strong></li>
+          <li><a href="/public/photos/history.html">History</a></li>
+          <li><a href="/public/photos/submit-photo.html">Submit a Photo</a></li>
+        </ul>
       </div>
+
+      <div id="gallery-filters" class="gallery-filters" aria-label="Filter photos">
+        <div class="gallery-filter-group">
+          <label for="filter-year">Year</label>
+          <select id="filter-year" data-filter="year">
+            <option value="">All years</option>
+          </select>
+        </div>
+        <div class="gallery-filter-group gallery-filter-group--search">
+          <label for="filter-search">Search</label>
+          <input type="search" id="filter-search" data-filter="search"
+            placeholder="Caption, tag, location..." autocomplete="off">
+        </div>
+      </div>
+
+      <p id="gallery-results-info" class="gallery-results-info" aria-live="polite"></p>
+      <p id="gallery-loading" class="text-muted">Loading photos...</p>
+      <div id="photo-gallery" data-category="land-and-nature"></div>
 
     </div>
   </main>
@@ -40,5 +61,6 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/photo-gallery.js"></script>
 </body>
 </html>

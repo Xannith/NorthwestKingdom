@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Submit a Photo — Northwest Kingdom</title>
+  <meta name="description" content="Share a Northwest Kingdom photo for the neighborhood archive.">
   <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="public">
@@ -12,26 +13,224 @@
   <nav id="site-nav" aria-label="Public navigation"></nav>
 
   <main id="main-content">
-    <div class="container page-wrapper">
+    <div class="container page-wrapper container--narrow">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
-            <li><a href="/">Home</a></li>
-            <li><a href="/public/photos/">Photos</a></li>
-            <li><span aria-current="page">Submit a Photo</span></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/public/photos/">Photos</a></li>
+          <li><span aria-current="page">Submit a Photo</span></li>
         </ol>
       </nav>
 
-
       <div class="page-header">
-        <span class="section-badge section-badge--public">Public</span>
         <h1>Submit a Photo</h1>
-        <p>Submit a photo for the NWK photo archive. All submissions reviewed before publication.</p>
+        <p>Share a Northwest Kingdom photo for the neighborhood archive.</p>
       </div>
 
-      <div class="notice notice--info">
-        <strong>Content placeholder.</strong>
-        This page is part of the Northwest Kingdom site framework.
-        Content will be added as records, documents, and information are organized.
+      <form
+        id="photo-submit-form"
+        name="photo-submission"
+        method="POST"
+        enctype="multipart/form-data"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        novalidate
+        aria-label="Photo submission form"
+      >
+        <input type="hidden" name="form-name" value="photo-submission">
+        <div hidden aria-hidden="true">
+          <label>Do not fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Photo</h2>
+          <p class="form-section__desc">JPEG or PNG only. Maximum file size: 8&nbsp;MB.</p>
+          <div class="form-field">
+            <label class="sr-only" for="photo-input">Select a photo to upload (required)</label>
+            <div class="upload-area" id="upload-area" role="group" aria-labelledby="upload-instructions">
+              <span class="upload-area__icon" aria-hidden="true">&#128247;</span>
+              <p class="upload-area__text" id="upload-instructions">
+                <strong>Click to choose a photo</strong> or drag and drop here
+              </p>
+              <p class="upload-area__hint">JPEG or PNG &bull; up to 8&nbsp;MB</p>
+              <input type="file" id="photo-input" name="photo"
+                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                required aria-required="true" aria-invalid="false" aria-describedby="photo-error">
+            </div>
+            <div class="upload-preview" id="upload-preview" aria-live="polite">
+              <img class="upload-preview__img" id="upload-preview-img" src="" alt="Preview of selected photo">
+              <div class="upload-preview__info">
+                <div class="upload-preview__name" id="upload-preview-name"></div>
+                <div class="upload-preview__size" id="upload-preview-size"></div>
+              </div>
+              <button class="upload-preview__remove" id="upload-remove" type="button"
+                      aria-label="Remove selected photo">Remove</button>
+            </div>
+            <p class="field-error" id="photo-error" role="alert" aria-live="assertive"></p>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Photo details</h2>
+          <div class="form-field">
+            <label class="form-label" for="photo-title">Title <span class="required" aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="photo-title" name="title"
+              maxlength="100" data-maxlength="100" required aria-required="true" aria-invalid="false"
+              aria-describedby="title-error" placeholder="A short, descriptive title">
+            <p class="char-counter" id="photo-title-counter" aria-live="polite"></p>
+            <p class="field-error" id="title-error" role="alert" aria-live="assertive"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="photo-category">Category <span class="required" aria-hidden="true">*</span></label>
+            <select class="form-select" id="photo-category" name="category"
+              required aria-required="true" aria-invalid="false" aria-describedby="category-error">
+              <option value="">-- Select a category --</option>
+              <option value="events">Events</option>
+              <option value="land-and-nature">Land and Nature</option>
+              <option value="history">History</option>
+              <option value="general">General</option>
+            </select>
+            <p class="field-error" id="category-error" role="alert" aria-live="assertive"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="submitter-name">Your name <span class="required" aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="submitter-name" name="submitter-name"
+              maxlength="100" data-maxlength="100" required aria-required="true" aria-invalid="false"
+              aria-describedby="submitter-error" autocomplete="name"
+              placeholder="How you would like to be credited">
+            <p class="field-error" id="submitter-error" role="alert" aria-live="assertive"></p>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Additional details <span class="pill">optional</span></h2>
+          <p class="form-section__desc">Any details you can provide help build the neighborhood archive.</p>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label" for="date-taken">Date taken</label>
+              <input class="form-input" type="date" id="date-taken" name="date-taken">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="photographer">Photographer</label>
+              <input class="form-input" type="text" id="photographer" name="photographer"
+                maxlength="100" data-maxlength="100" placeholder="If different from your name">
+              <p class="char-counter" id="photographer-counter" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="location">Location in NWK</label>
+            <input class="form-input" type="text" id="location" name="location"
+              maxlength="200" data-maxlength="200"
+              placeholder="e.g. North trail, Community garden, Lot 12 area">
+            <p class="char-counter" id="location-counter" aria-live="polite"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="caption">Caption</label>
+            <textarea class="form-textarea" id="caption" name="caption" rows="3"
+              maxlength="500" data-maxlength="500"
+              placeholder="What is happening in this photo?"></textarea>
+            <p class="char-counter" id="caption-counter" aria-live="polite"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="tags">Tags <span class="text-muted text-small">-- comma-separated</span></label>
+            <input class="form-input" type="text" id="tags" name="tags"
+              maxlength="200" data-maxlength="200"
+              placeholder="e.g. spring, wildflowers, work-party, 2024">
+            <p class="char-counter" id="tags-counter" aria-live="polite"></p>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label" for="related-event">Related event</label>
+              <input class="form-input" type="text" id="related-event" name="related-event"
+                maxlength="200" placeholder="e.g. Spring Work Party 2024">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="visibility">Visibility preference</label>
+              <select class="form-select" id="visibility" name="visibility">
+                <option value="public">Public -- show on the website</option>
+                <option value="member-only">Member-only -- NWK members only</option>
+              </select>
+              <p class="form-hint">Final visibility is set by the reviewer.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">People in the photo</h2>
+          <div class="form-field">
+            <label class="checkbox-label" for="identifiable-people">
+              <input type="checkbox" id="identifiable-people" name="identifiable-people" value="yes">
+              This photo includes identifiable people.
+            </label>
+          </div>
+          <div class="conditional-section" id="people-permission-section" aria-live="polite">
+            <div class="form-field">
+              <label class="form-label" for="people-shown">Who is shown? <span class="text-muted text-small">(general description)</span></label>
+              <input class="form-input" type="text" id="people-shown" name="people-shown"
+                maxlength="200" placeholder="e.g. Several neighbors at work party">
+            </div>
+            <fieldset>
+              <legend class="form-label">Permission status <span class="required" aria-hidden="true">*</span></legend>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="people-permission" value="confirmed">
+                  I have permission from the identifiable people shown.
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="people-permission" value="unsure">
+                  I am not sure -- please review before posting.
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="people-permission" value="needs-review">
+                  This should be reviewed before public posting.
+                </label>
+              </div>
+              <p class="field-error" id="people-permission-error" role="alert" aria-live="assertive"></p>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Permission</h2>
+          <div class="form-field">
+            <label class="checkbox-label" for="permission-confirm">
+              <input type="checkbox" id="permission-confirm" name="permission-confirm" value="confirmed"
+                required aria-required="true" aria-invalid="false" aria-describedby="permission-error">
+              I confirm that I have the right to share this photo with Northwest Kingdom
+              and that it may be displayed on the NorthwestKingdom.com website.
+              <span class="required" aria-hidden="true">*</span>
+            </label>
+            <p class="field-error" id="permission-error" role="alert" aria-live="assertive"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="contact-email">Contact email <span class="pill">optional -- private</span></label>
+            <input class="form-input" type="email" id="contact-email" name="contact-email"
+              autocomplete="email" placeholder="For follow-up only -- never shown publicly">
+            <p class="form-hint">Your email will not be displayed publicly or included in gallery metadata.</p>
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--lg" type="submit" id="submit-btn">Submit Photo</button>
+
+      </form>
+
+      <div class="submit-result submit-result--success" id="submit-success"
+           role="status" aria-live="polite" tabindex="-1" hidden>
+        <p class="submit-result__title">&#10003; Thank you. Your photo submission was received.</p>
+        <p>Your photo has been received and is waiting for review by the neighborhood team.
+           It will be added to the gallery once approved.</p>
+        <p>
+          <a href="/public/photos/">View the photo gallery</a> &bull;
+          <a href="/public/photos/submit-photo.html">Submit another photo</a>
+        </p>
+      </div>
+
+      <div class="submit-result submit-result--error" id="submit-error"
+           role="alert" aria-live="assertive" hidden>
+        <p class="submit-result__title">Something went wrong.</p>
+        <p>Your submission could not be sent. Please try again, or contact the neighborhood coordinator directly.</p>
+        <p class="form-hint">If testing locally, submissions will not process --
+           Netlify Forms only works on the deployed site. See <code>PHOTO_UPLOADS_IMPLEMENTATION.md</code>.</p>
       </div>
 
     </div>
@@ -40,5 +239,6 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/photo-submit.js"></script>
 </body>
 </html>

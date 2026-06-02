@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photos — Northwest Kingdom</title>
-  <meta name="description" content="NWK photos — land, nature, events, and neighborhood history contributed by residents.">
+  <title>Photos -- Northwest Kingdom</title>
+  <meta name="description" content="NWK photos -- land, nature, events, and neighborhood history contributed by residents.">
   <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body data-section="public">
@@ -23,11 +23,11 @@
 
       <div class="page-header">
         <h1>NWK Photos</h1>
-        <p>Land and nature, events, and neighborhood history — contributed by Northwest Kingdom residents.</p>
+        <p>Land and nature, events, and neighborhood history -- contributed by Northwest Kingdom residents.</p>
       </div>
 
-      <div class="section-nav" aria-label="Photo sections">
-        <h3>Photo galleries</h3>
+      <div class="section-nav" aria-label="Photo galleries">
+        <h3>Galleries</h3>
         <ul>
           <li><a href="/public/photos/events.html">Events</a></li>
           <li><a href="/public/photos/land-and-nature.html">Land and Nature</a></li>
@@ -36,31 +36,44 @@
         </ul>
       </div>
 
-      <div class="notice notice--info">
-        <strong>No photos uploaded yet.</strong>
-        Photos contributed by residents will appear here once reviewed and approved.
-        Only photos with confirmed permission status are published publicly.
+      <!-- Filter controls (all categories) -->
+      <div id="gallery-filters" class="gallery-filters" aria-label="Filter photos">
+        <div class="gallery-filter-group">
+          <label for="filter-category">Category</label>
+          <select id="filter-category" data-filter="category">
+            <option value="">All categories</option>
+            <option value="events">Events</option>
+            <option value="land-and-nature">Land and Nature</option>
+            <option value="history">History</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div class="gallery-filter-group">
+          <label for="filter-year">Year</label>
+          <select id="filter-year" data-filter="year">
+            <option value="">All years</option>
+          </select>
+        </div>
+        <div class="gallery-filter-group gallery-filter-group--search">
+          <label for="filter-search">Search</label>
+          <input type="search" id="filter-search" data-filter="search"
+            placeholder="Title, caption, tag..." autocomplete="off">
+        </div>
       </div>
+
+      <p id="gallery-results-info" class="gallery-results-info" aria-live="polite"></p>
+
+      <p id="gallery-loading" class="text-muted">Loading photos...</p>
+
+      <div id="photo-gallery" data-category=""></div>
 
       <hr class="divider">
 
-      <h2>Photo metadata and permissions</h2>
-      <p>All photos published here include the following information where available:</p>
-      <ul>
-        <li><strong>Title</strong> — a descriptive name</li>
-        <li><strong>Date</strong> — when the photo was taken</li>
-        <li><strong>Location</strong> — general location in NWK</li>
-        <li><strong>Photographer</strong> — name or "Anonymous" if preferred</li>
-        <li><strong>Permission status</strong> — confirmed public use</li>
-        <li><strong>Caption</strong> — brief description</li>
-        <li><strong>Tags</strong> — topic, year, event, etc.</li>
-        <li><strong>Related event</strong> — linked to calendar or archive entry, if applicable</li>
-      </ul>
-      <p>
-        Photos awaiting permission review, or approved only for member viewing, are held in the
-        member-only area and are not publicly accessible.
-      </p>
-
+      <h2>Photo permissions and metadata</h2>
+      <p>All photos published here include the following where available:
+         title, date, location, photographer credit, caption, and tags.
+         Photos containing identifiable people are published only with confirmed permission.
+         Member-only photos are not shown here.</p>
       <p><a href="/public/photos/submit-photo.html" class="btn btn--secondary">Submit a photo &rarr;</a></p>
 
     </div>
@@ -69,5 +82,6 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/photo-gallery.js"></script>
 </body>
 </html>
