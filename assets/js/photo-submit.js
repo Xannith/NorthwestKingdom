@@ -11,6 +11,10 @@
  *   - Allowed extensions: .jpg, .jpeg, .png
  *   - Max file size: 8 MB
  *   - Rejected: gif, svg, heic, pdf, webp, executables
+ *
+ * Submission method: native multipart/form-data POST (required by Netlify Forms
+ * for file attachment support). JavaScript intercepts only to run validation;
+ * the browser submits the form natively if validation passes.
  */
 (function () {
   'use strict';
@@ -275,18 +279,14 @@
   /* ── Form submission ───────────────────────────────────── */
 
   function initForm() {
-    var form       = $('photo-submit-form');
-    var submitBtn  = $('submit-btn');
-    var successEl  = $('submit-success');
-    var errorEl    = $('submit-error');
+    var form      = $('photo-submit-form');
+    var submitBtn = $('submit-btn');
     if (!form) return;
 
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      /* Validate */
+      /* Block submission only when client-side validation fails. */
       if (!validateForm(form)) {
-        /* Scroll to first visible error */
+        e.preventDefault();
         var firstError = form.querySelector('.form-field--error');
         if (firstError) {
           firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -294,54 +294,32 @@
         return;
       }
 
-      /* Sanitize text fields before submit */
+      /* Sanitize text fields before the browser sends the POST. */
       ['photo-title', 'location', 'photographer', 'caption', 'tags',
        'related-event', 'people-shown', 'submitter-name'].forEach(function (id) {
         var el = $(id);
         if (el) el.value = sanitizeText(el.value, parseInt(el.dataset.maxlength || '500', 10));
       });
 
-      /* Loading state */
+      /* Show loading state; the page will navigate away once Netlify processes the POST. */
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.classList.add('btn--loading');
-        submitBtn.dataset.originalText = submitBtn.textContent;
         submitBtn.textContent = 'Submitting…';
       }
 
-      /* Submit via fetch to Netlify Forms */
-      var data = new FormData(form);
-
-      fetch('/', {
-        method: 'POST',
-        body: data
-      })
-        .then(function (resp) {
-          if (resp.ok) {
-            form.hidden = true;
-            if (successEl) {
-              successEl.classList.add('is-visible');
-              successEl.focus();
-            }
-          } else {
-            throw new Error('HTTP ' + resp.status);
-          }
-        })
-        .catch(function () {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('btn--loading');
-            submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Photo';
-          }
-          if (errorEl) errorEl.classList.add('is-visible');
-        });
+      /*
+       * Native multipart/form-data POST proceeds from here.
+       * Netlify Forms requires a native browser POST (not fetch/XHR) for file attachments.
+       * On success Netlify redirects to the form's action URL.
+       */
     });
 
     /* Live validation on blur */
     form.querySelectorAll('input[required], select[required], textarea[required]')
       .forEach(function (el) {
         el.addEventListener('blur', function () {
-          validateForm(form); /* re-run full validation to clear resolved errors */
+          validateForm(form);
         });
       });
   }
