@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archives — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="member">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Member navigation"></nav>
+
+  <div class="site-body">
+    <aside id="site-left-nav" aria-label="Member section navigation"></aside>
+
+    <main id="main-content">
+      <div class="container page-wrapper">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/member/dashboard/">Dashboard</a></li>
+            <li><span aria-current="page">Archives</span></li>
+          </ol>
+        </nav>
+
+        <div class="auth-gate" role="alert">
+          <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+          <div class="auth-gate-body">
+            <h3>Authentication required</h3>
+            <p>Member login required. <a href="/login/">Log in</a> &bull; <a href="/login/request-access.html">Request access</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <span class="section-badge section-badge--member">Archives</span>
+          <h1>Archives</h1>
+          <p>Historical records, newsletters, council business, and converted documents. This section is being built as PDFs are gathered and converted.</p>
+        </div>
+
+        <div class="notice notice--info">
+          Archive content is being prepared. PDFs need to be uploaded and converted to searchable HTML before most sections become searchable.
+          See <code>DOCUMENT_CONVERSION_PLAN.md</code> for the conversion roadmap.
+        </div>
+
+        <div class="dashboard-grid">
+          <a href="/member/archives/council-business/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128221;</span>
+            <div class="card-title">Council Business</div>
+            <p class="card-desc">TC agendas, actions, approved minutes, vote records. Being gathered and converted.</p>
+          </a>
+
+          <a href="/member/archives/alternate-current/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128240;</span>
+            <div class="card-title">Alternate Current</div>
+            <p class="card-desc">NWK neighborhood newsletter archive going back to 1973. Issues being gathered and converted.</p>
+          </a>
+
+          <div class="card">
+            <span class="card-icon" aria-hidden="true">&#128218;</span>
+            <div class="card-title">Historical Documents <span class="tag tag--needs-upload">Needs Upload</span></div>
+            <p class="card-desc">Historical NWK and MLC documents not yet gathered. This section will be built as materials are located and uploaded.</p>
+          </div>
+
+          <a href="/public/photos/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#127956;</span>
+            <div class="card-title">Photo Archive</div>
+            <p class="card-desc">Photos contributed by Northwest Kingdom residents. Currently in the public area — will move to member archive as access controls are implemented.</p>
+          </a>
+
+          <div class="card">
+            <span class="card-icon" aria-hidden="true">&#128196;</span>
+            <div class="card-title">Converted HTML Records <span class="tag tag--coming-soon">Coming Soon</span></div>
+            <p class="card-desc">Searchable HTML versions of converted PDFs. Available as documents are uploaded and processed.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-icon" aria-hidden="true">&#128462;</span>
+            <div class="card-title">PDF Library <span class="tag tag--needs-upload">Needs Upload</span></div>
+            <p class="card-desc">Repository of uploaded PDFs including governance documents, council packets, and historical materials.</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

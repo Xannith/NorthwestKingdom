@@ -1780,3 +1780,347 @@ tr:hover td { background: var(--color-surface-alt); }
   .gallery-filter-group { min-width: 100%; }
   .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
+
+
+/* ============================================================
+   Left nav sidebar layout
+   Pages that include <aside id="site-left-nav"> inside a
+   .site-body wrapper will get this layout.
+   ============================================================ */
+
+.site-body {
+  display: flex;
+  align-items: flex-start;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-2xl);
+  gap: var(--spacing-2xl);
+}
+
+.site-body > main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* When inside .site-body, container is full-width of the flex child */
+.site-body > main .container {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* page-wrapper already pads top/bottom; site-body handles outer spacing */
+.site-body > main .page-wrapper {
+  padding-top: 0;
+}
+
+/* Left nav sidebar */
+#site-left-nav {
+  width: 216px;
+  flex-shrink: 0;
+  position: sticky;
+  top: calc(56px + var(--spacing-md));
+  max-height: calc(100vh - 56px - var(--spacing-2xl));
+  overflow-y: auto;
+  /* Custom scrollbar — subtle */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* ── Left nav component styles ────────────────────────────── */
+
+.left-nav {
+  font-size: 0.875rem;
+}
+
+.left-nav__group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.left-nav__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--color-text-light);
+  margin: 0 0 var(--spacing-xs) var(--spacing-sm);
+  padding: 0;
+}
+
+.left-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.left-nav__item {
+  display: block;
+}
+
+.left-nav__list > .left-nav__item > a,
+.left-nav__list > .left-nav__item > .left-nav__details > .left-nav__summary {
+  display: block;
+  padding: 0.35rem var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  line-height: 1.4;
+  transition: background 0.12s, color 0.12s;
+}
+
+.left-nav__list > .left-nav__item > a:hover,
+.left-nav__list > .left-nav__item > a.active {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-dark);
+}
+
+.left-nav__list > .left-nav__item > a.active {
+  font-weight: 600;
+}
+
+/* Collapsible sections using <details> */
+.left-nav__details {
+  border: none;
+}
+
+.left-nav__summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: background 0.12s, color 0.12s;
+}
+
+.left-nav__summary::-webkit-details-marker { display: none; }
+.left-nav__summary::marker { display: none; }
+
+.left-nav__summary::after {
+  content: ' ▸';
+  font-size: 0.65em;
+  opacity: 0.5;
+  float: right;
+  margin-top: 0.2em;
+}
+
+.left-nav__details[open] > .left-nav__summary::after {
+  content: ' ▾';
+}
+
+.left-nav__summary:hover {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-dark);
+}
+
+/* Sub-list (inside <details>) */
+.left-nav__sub {
+  list-style: none;
+  margin: 2px 0 var(--spacing-xs);
+  padding: 0;
+  padding-left: var(--spacing-md);
+  border-left: 2px solid var(--color-border-light);
+  margin-left: var(--spacing-sm);
+}
+
+.left-nav__sub li { display: block; }
+
+.left-nav__sub a {
+  display: block;
+  padding: 0.25rem var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  transition: background 0.12s, color 0.12s;
+}
+
+.left-nav__sub a:hover {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-dark);
+}
+
+.left-nav__sub a.active {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* Public left nav: sub-list is always visible (no <details>) */
+.left-nav__item--parent > .left-nav__sub {
+  margin-top: 2px;
+  border-left: 2px solid var(--color-border-light);
+  margin-left: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+}
+
+/* Mobile toggle for left nav — hidden on desktop */
+.left-nav__mobile-toggle {
+  display: none;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: var(--spacing-sm);
+  transition: background 0.15s;
+}
+
+.left-nav__mobile-toggle:hover {
+  background: var(--color-surface-alt);
+}
+
+/* Left nav sections — always visible on desktop */
+.left-nav__sections {
+  display: block;
+}
+
+/* ── Left nav responsive ──────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .site-body {
+    flex-direction: column;
+    gap: 0;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  #site-left-nav {
+    width: 100%;
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .left-nav__mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Hidden until toggled on mobile */
+  .left-nav__sections {
+    display: none;
+  }
+
+  .left-nav__sections.is-open {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-body {
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+}
+
+/* ── Document status tags ─────────────────────────────────── */
+
+.tag--available       { background: #eef9ee; color: #1a5c1a; border-color: #5cb85c; }
+.tag--coming-soon     { background: var(--color-surface-alt); color: var(--color-text-muted); border-color: var(--color-border); }
+.tag--needs-upload    { background: var(--color-warning-bg); color: var(--color-warning); border-color: var(--color-warning-border); }
+.tag--needs-conversion { background: #fff3e0; color: #8a4700; border-color: #ffb74d; }
+.tag--needs-review    { background: var(--color-member-bg); color: var(--color-member-dark); border-color: var(--color-member); }
+.tag--pdf-only        { background: var(--color-accent-bg); color: var(--color-accent); border-color: var(--color-accent-light); }
+.tag--html-available  { background: var(--color-primary-bg); color: var(--color-primary-dark); border-color: var(--color-primary-light); }
+.tag--member-only     { background: var(--color-member-bg); color: var(--color-member-dark); border-color: var(--color-member); }
+.tag--admin-only      { background: var(--color-admin-bg); color: var(--color-admin-dark); border-color: var(--color-admin); }
+
+/* ── Document cards (public documents page) ──────────────── */
+
+.doc-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.doc-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.doc-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  margin: 0 0 var(--spacing-xs);
+}
+
+.doc-card__title a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.doc-card__title a:hover {
+  color: var(--color-link);
+  text-decoration: underline;
+}
+
+.doc-card__desc {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 var(--spacing-md);
+}
+
+.doc-card__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.doc-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.doc-card__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.4em 0.85em;
+  background: var(--color-primary-bg);
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius);
+  color: var(--color-primary-dark);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.doc-card__links a:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.doc-card__meta {
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.doc-card__note {
+  font-style: italic;
+  font-size: 0.82rem;
+  margin: 0 0 var(--spacing-xs);
+}

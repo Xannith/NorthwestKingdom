@@ -11,78 +11,89 @@
   <div id="site-header"></div>
   <nav id="site-nav" aria-label="Member navigation"></nav>
 
-  <main id="main-content">
-    <div class="container page-wrapper">
-      <div class="auth-gate" role="alert" aria-live="polite">
-        <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
-        <div class="auth-gate-body">
-          <h3>Authentication required</h3>
-          <p>
-            This area is for Northwest Kingdom members. Authentication is not yet implemented.
-            See <a href="/SECURITY_NOTES.md"><code>SECURITY_NOTES.md</code></a> for the roadmap.
-            <a href="/login/">Log in</a> &bull; <a href="/login/request-access.html">Request access</a>
-          </p>
+  <div class="site-body">
+    <aside id="site-left-nav" aria-label="Member section navigation"></aside>
+
+    <main id="main-content">
+      <div class="container page-wrapper">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><span aria-current="page">Dashboard</span></li>
+          </ol>
+        </nav>
+
+        <div class="auth-gate" role="alert" aria-live="polite">
+          <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+          <div class="auth-gate-body">
+            <h3>Authentication required</h3>
+            <p>
+              This area is for Northwest Kingdom members. Authentication is not yet implemented.
+              See <a href="/SECURITY_NOTES.md"><code>SECURITY_NOTES.md</code></a> for the roadmap.
+              <a href="/login/">Log in</a> &bull; <a href="/login/request-access.html">Request access</a>
+            </p>
+          </div>
         </div>
+
+        <div class="page-header">
+          <span class="section-badge section-badge--member">Member area</span>
+          <h1>Dashboard</h1>
+          <p>Welcome to the Northwest Kingdom member area.</p>
+        </div>
+
+        <div class="dashboard-grid">
+          <a href="/member/nwk-hub/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#127968;</span>
+            <div class="card-title">NWK Hub</div>
+            <p class="card-desc">Notices, announcements, neighborhood map, people and households, neighborhood history.</p>
+          </a>
+
+          <a href="/member/governance/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128220;</span>
+            <div class="card-title">Governance</div>
+            <p class="card-desc">MLC framework, TC representation, NWK governance development, records.</p>
+          </a>
+
+          <a href="/member/operations/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128296;</span>
+            <div class="card-title">Operations</div>
+            <p class="card-desc">Roads, drainage, maintenance, work parties, land stewardship, SOPs.</p>
+          </a>
+
+          <a href="/member/projects/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128203;</span>
+            <div class="card-title">Projects</div>
+            <p class="card-desc">Active, proposed, completed, and deferred neighborhood projects.</p>
+          </a>
+
+          <a href="/member/calendar/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128197;</span>
+            <div class="card-title">Calendar</div>
+            <p class="card-desc">Internal calendar, event planning, recurring events, calendar requests.</p>
+          </a>
+
+          <a href="/member/documents/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128193;</span>
+            <div class="card-title">Documents</div>
+            <p class="card-desc">NWK documents, MLC reference copies, templates, forms, and archive.</p>
+          </a>
+
+          <a href="/member/archives/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128218;</span>
+            <div class="card-title">Archives</div>
+            <p class="card-desc">Council Business, Alternate Current, historical documents, photo archive, converted records, PDF library.</p>
+          </a>
+
+          <a href="/member/search/" class="card card--link">
+            <span class="card-icon" aria-hidden="true">&#128269;</span>
+            <div class="card-title">Search</div>
+            <p class="card-desc">Search member-area content including records, documents, and discussions.</p>
+          </a>
+        </div>
+
       </div>
-
-      <div class="page-header">
-        <span class="section-badge section-badge--member">Member area</span>
-        <h1>Dashboard</h1>
-        <p>Welcome to the Northwest Kingdom member area.</p>
-      </div>
-
-      <div class="dashboard-grid">
-        <a href="/member/nwk-hub/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#127968;</span>
-          <div class="card-title">NWK Hub</div>
-          <p class="card-desc">Notices, announcements, neighborhood map, people and households, neighborhood history.</p>
-        </a>
-
-        <a href="/member/governance/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128220;</span>
-          <div class="card-title">Governance</div>
-          <p class="card-desc">MLC framework, TC representation, NWK governance development, records.</p>
-        </a>
-
-        <a href="/member/operations/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128296;</span>
-          <div class="card-title">Operations</div>
-          <p class="card-desc">Roads, drainage, maintenance, work parties, land stewardship, SOPs.</p>
-        </a>
-
-        <a href="/member/projects/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128203;</span>
-          <div class="card-title">Projects</div>
-          <p class="card-desc">Active, proposed, completed, and deferred neighborhood projects.</p>
-        </a>
-
-        <a href="/member/calendar/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128197;</span>
-          <div class="card-title">Calendar</div>
-          <p class="card-desc">Internal calendar, event planning, recurring events, calendar requests.</p>
-        </a>
-
-        <a href="/member/documents/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128193;</span>
-          <div class="card-title">Documents</div>
-          <p class="card-desc">NWK documents, MLC reference copies, templates, forms, and archive.</p>
-        </a>
-
-        <a href="/member/search/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128269;</span>
-          <div class="card-title">Search</div>
-          <p class="card-desc">Search all member-area content including records, documents, and discussions.</p>
-        </a>
-
-        <a href="/member/profile/" class="card card--link">
-          <span class="card-icon" aria-hidden="true">&#128100;</span>
-          <div class="card-title">Profile</div>
-          <p class="card-desc">Your account, household info, notification settings, and privacy preferences.</p>
-        </a>
-      </div>
-
-    </div>
-  </main>
+    </main>
+  </div>
 
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>

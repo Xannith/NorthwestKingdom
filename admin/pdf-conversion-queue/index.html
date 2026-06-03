@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Conversion Queue — Admin — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="admin">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Admin navigation"></nav>
+
+  <div class="site-body">
+    <aside id="site-left-nav" aria-label="Admin section navigation"></aside>
+
+    <main id="main-content">
+      <div class="container page-wrapper">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/admin/">Admin</a></li>
+            <li><span aria-current="page">PDF Conversion Queue</span></li>
+          </ol>
+        </nav>
+
+        <div class="auth-gate" role="alert">
+          <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+          <div class="auth-gate-body">
+            <h3>Administrator access required</h3>
+            <p>Admin authentication required. <a href="/login/">Log in</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <span class="section-badge section-badge--admin">Admin</span>
+          <h1>PDF Conversion Queue</h1>
+          <p>Track PDFs queued for conversion to searchable HTML. Manage conversion status, metadata, and review state.</p>
+        </div>
+
+        <div class="notice notice--info">
+          <strong>Scaffold only.</strong>
+          This tool will track uploaded PDFs and their conversion status. See <code>DOCUMENT_CONVERSION_PLAN.md</code> for the conversion workflow and naming conventions.
+        </div>
+
+        <h2>Conversion workflow</h2>
+        <ol>
+          <li>Upload PDF to the appropriate location (public or member area)</li>
+          <li>Add entry here with status: <span class="tag tag--needs-conversion">Needs Conversion</span></li>
+          <li>Convert PDF to HTML (OCR if scanned)</li>
+          <li>Review HTML output for accuracy</li>
+          <li>Set status to <span class="tag tag--needs-review">Needs Review</span></li>
+          <li>After review, mark as <span class="tag tag--html-available">HTML Available</span> and update the document page</li>
+          <li>Add to search index (public or member, not both)</li>
+        </ol>
+
+        <h2>Queue</h2>
+        <p class="text-muted">No documents currently in the queue. Add entries here as PDFs are uploaded.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

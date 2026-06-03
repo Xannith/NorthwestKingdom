@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Council Business — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="member">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Member navigation"></nav>
+
+  <div class="site-body">
+    <aside id="site-left-nav" aria-label="Member section navigation"></aside>
+
+    <main id="main-content">
+      <div class="container page-wrapper">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/member/dashboard/">Dashboard</a></li>
+            <li><a href="/member/archives/">Archives</a></li>
+            <li><span aria-current="page">Council Business</span></li>
+          </ol>
+        </nav>
+
+        <div class="auth-gate" role="alert">
+          <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+          <div class="auth-gate-body">
+            <h3>Authentication required</h3>
+            <p>Member login required. <a href="/login/">Log in</a> &bull; <a href="/login/request-access.html">Request access</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <span class="section-badge section-badge--member">Archives</span>
+          <h1>Council Business</h1>
+          <p>MLC Town Council agendas, actions, approved minutes, and meeting records. This archive is being built as materials are gathered, uploaded, and converted.</p>
+        </div>
+
+        <div class="notice notice--info">
+          <strong>Archive in progress.</strong>
+          Council business materials need to be gathered and uploaded before this section becomes searchable.
+          PDF documents will be listed here once uploaded. HTML conversions will be added as they are completed.
+          See <code>DOCUMENT_CONVERSION_PLAN.md</code> for the conversion roadmap.
+        </div>
+
+        <h2>What this section will include</h2>
+        <ul>
+          <li>TC meeting agendas</li>
+          <li>Actions and decisions</li>
+          <li>Approved minutes</li>
+          <li>Monthly packet view</li>
+          <li>Topic and keyword index</li>
+          <li>Vote records</li>
+          <li>PDF downloads</li>
+          <li>Searchable HTML versions</li>
+        </ul>
+
+        <h2>Current status</h2>
+        <div class="doc-card-list">
+          <div class="doc-card">
+            <h3 class="doc-card__title">Meeting Agendas and Minutes</h3>
+            <div class="doc-card__status">
+              <span class="tag tag--needs-upload">Needs Upload</span>
+            </div>
+            <p class="doc-card__desc">Agendas and approved minutes need to be gathered and uploaded. Naming and organization pattern documented in <code>DOCUMENT_CONVERSION_PLAN.md</code>.</p>
+          </div>
+          <div class="doc-card">
+            <h3 class="doc-card__title">Searchable HTML Versions</h3>
+            <div class="doc-card__status">
+              <span class="tag tag--needs-conversion">Needs Conversion</span>
+            </div>
+            <p class="doc-card__desc">HTML conversions can be added once PDFs are uploaded and reviewed. Conversion process documented in <code>DOCUMENT_CONVERSION_PLAN.md</code>.</p>
+          </div>
+          <div class="doc-card">
+            <h3 class="doc-card__title">Search Index</h3>
+            <div class="doc-card__status">
+              <span class="tag tag--coming-soon">Coming Soon</span>
+            </div>
+            <p class="doc-card__desc">Full-text search will be available once HTML versions are indexed. Member-only — will not appear in public search results.</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

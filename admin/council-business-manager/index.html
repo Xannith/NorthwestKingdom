@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Council Business Manager — Admin — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="admin">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Admin navigation"></nav>
+
+  <div class="site-body">
+    <aside id="site-left-nav" aria-label="Admin section navigation"></aside>
+
+    <main id="main-content">
+      <div class="container page-wrapper">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/admin/">Admin</a></li>
+            <li><span aria-current="page">Council Business Manager</span></li>
+          </ol>
+        </nav>
+
+        <div class="auth-gate" role="alert">
+          <span class="auth-gate-icon" aria-hidden="true">&#128274;</span>
+          <div class="auth-gate-body">
+            <h3>Administrator access required</h3>
+            <p>Admin authentication required. <a href="/login/">Log in</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <span class="section-badge section-badge--admin">Admin</span>
+          <h1>Council Business Manager</h1>
+          <p>Upload agendas and approved minutes, manage the council business archive index, and update the member search index.</p>
+        </div>
+
+        <div class="notice notice--info">
+          <strong>Scaffold only.</strong>
+          This tool will manage the Council Business archive at <code>/member/archives/council-business/</code>.
+          See <code>DOCUMENT_CONVERSION_PLAN.md</code> for upload workflow and naming conventions.
+        </div>
+
+        <h2>Upload workflow</h2>
+        <ol>
+          <li>Save the PDF using the naming pattern: <code>mlc-tc-YYYYMM-[type].pdf</code> (e.g., <code>mlc-tc-202403-minutes.pdf</code>)</li>
+          <li>Upload to the member documents area (not to a public folder)</li>
+          <li>Add an entry to the archive index with date, type, and status</li>
+          <li>If converting to HTML: follow the conversion process in <code>DOCUMENT_CONVERSION_PLAN.md</code></li>
+          <li>Update the member search index — do not add to the public search index</li>
+        </ol>
+
+        <h2>Archive index</h2>
+        <p class="text-muted">No council business documents have been uploaded yet. The archive will be listed here once documents are added.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
