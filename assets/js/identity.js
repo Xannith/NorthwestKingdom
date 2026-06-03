@@ -1,31 +1,34 @@
 /**
  * NWK Identity
- * Netlify Identity event handlers: login redirect, logout, invite/confirmation flow.
+ * Netlify Identity event handlers: nav update, login redirect, logout.
  *
- * LOADING ORDER REQUIREMENT:
- *   The Netlify Identity Widget script must be loaded before this script runs.
- *   On login/index.html and index.html, the widget is loaded in <head> as a blocking
- *   script. On all other pages, components.js loads it dynamically (async) — the
- *   polling fallback below handles that case.
+ * The Netlify Identity Widget must be loaded before this script.
+ * login/index.html and index.html load it as a blocking <script> in <head>.
+ * All other pages get it via components.js (async); polling handles that case.
  *
- * ROLE ASSIGNMENT NOTE:
- *   netlify.toml redirect conditions check app_metadata.roles — NOT user_metadata.
- *   In the Netlify dashboard: Identity → Users → select user → App metadata → set:
- *     {"roles": ["admin"]}    or    {"roles": ["member"]}
- *   Setting a role in "User metadata" has NO effect on redirect access control.
+ * NAV UPDATE CONTRACT
+ *   components.js exposes window.NWK.updateNav(user).
+ *   identity.js calls it on every auth-state change so the nav always reflects
+ *   who is logged in, regardless of which page the user is on.
+ *
+ * ROLE ASSIGNMENT REMINDER
+ *   Redirect rules in netlify.toml check app_metadata.roles — NOT user_metadata.
+ *   Dashboard: Identity → Users → select user → App metadata → {"roles":["admin"]}
  */
 (function () {
   'use strict';
 
-  var DASHBOARD = '/member/dashboard/';
+  var DASHBOARD    = '/member/dashboard/';
   var ACCESS_DENIED = '/access-denied/';
-  var REDIRECT_KEY = 'nwk_redirect_attempt'; /* sessionStorage key for loop detection */
+  var REDIRECT_KEY = 'nwk_redirect_attempt';
 
-  /* ── Redirect after a successful login ─────────────────────────────────────
-     Runs from ANY page. Needed so invite links (which land on the homepage)
-     redirect the user to the member dashboard after they set their password.    */
-  function onLogin() {
+  /* ── Post-login redirect ──────────────────────────────────────────────────── */
+
+  function onLogin(user) {
+    /* Update nav before navigating (fast for pages with widget in <head>) */
+    if (window.NWK && window.NWK.updateNav) window.NWK.updateNav(user);
     netlifyIdentity.close();
+
     var isLoginPage = window.location.pathname.indexOf('/login') === 0;
     if (isLoginPage) {
       var p = new URLSearchParams(window.location.search);
@@ -37,19 +40,14 @@
     }
   }
 
-  /* ── Detect redirect loops for already-logged-in users ─────────────────────
-     When a user is logged in but lacks the required role:
-       1. They visit /member/dashboard/
-       2. Netlify CDN redirects them to /login/?redirect=/member/dashboard/
-       3. identity.js init sees they're logged in → redirects to /member/dashboard/
-       4. Netlify CDN redirects them again → LOOP
-     Detection: use document.referrer (cleared in private mode) + sessionStorage fallback. */
+  /* ── Loop detection (logged-in user blocked by role check) ────────────────── */
+
   function redirectWithLoopDetection(dest) {
     var decoded = decodeURIComponent(dest);
-    var referrerLoop = document.referrer && document.referrer.indexOf(decoded) !== -1;
-    var sessionLoop  = sessionStorage.getItem(REDIRECT_KEY) === decoded;
+    var refLoop     = document.referrer && document.referrer.indexOf(decoded) !== -1;
+    var sessionLoop = sessionStorage.getItem(REDIRECT_KEY) === decoded;
 
-    if (referrerLoop || sessionLoop) {
+    if (refLoop || sessionLoop) {
       sessionStorage.removeItem(REDIRECT_KEY);
       window.location.href = ACCESS_DENIED;
     } else {
@@ -58,9 +56,12 @@
     }
   }
 
-  function setup() {
+  /* ── Core setup — called once the Identity Widget is available ────────────── */
 
-    /* ── Logout ─────────────────────────────────────────────────────────────── */
+  function setup() {
+    var isLoginPage = window.location.pathname.indexOf('/login') === 0;
+
+    /* Logout via data-logout attribute (event delegation — works after nav inject) */
     document.addEventListener('click', function (e) {
       var el = e.target.closest('[data-logout]');
       if (el) {
@@ -70,26 +71,25 @@
     });
 
     netlifyIdentity.on('logout', function () {
+      if (window.NWK && window.NWK.updateNav) window.NWK.updateNav(null);
       window.location.href = '/';
     });
 
-    /* ── Login ──────────────────────────────────────────────────────────────── */
+    /* Login — registered on every page so invite flow works from homepage too */
     netlifyIdentity.on('login', onLogin);
 
-    /* ── Login-page-specific init behaviour ─────────────────────────────────── */
-    var isLoginPage = window.location.pathname.indexOf('/login') === 0;
-    if (isLoginPage) {
-      var btn = document.getElementById('login-open-btn');
-      if (btn) {
-        btn.addEventListener('click', function () {
-          netlifyIdentity.open('login');
-        });
+    /* Init — registered on EVERY page, not just login.
+       This is what makes the nav update when a returning user visits any page. */
+    netlifyIdentity.on('init', function (user) {
+      /* Always update nav to reflect current auth state */
+      if (window.NWK && window.NWK.updateNav) {
+        window.NWK.updateNav(user);
       }
 
-      netlifyIdentity.on('init', function (user) {
+      /* Login-page specific behaviour */
+      if (isLoginPage) {
         if (user) {
-          /* Already authenticated — redirect, with loop detection */
-          var p    = new URLSearchParams(window.location.search);
+          var p = new URLSearchParams(window.location.search);
           var dest = p.get('redirect');
           if (dest) {
             redirectWithLoopDetection(dest);
@@ -99,26 +99,34 @@
           }
           return;
         }
-        /* Not logged in: auto-open the login modal */
+        /* Not logged in: open login modal */
         netlifyIdentity.open('login');
-      });
+      }
+    });
+
+    /* Login-page button */
+    if (isLoginPage) {
+      var btn = document.getElementById('login-open-btn');
+      if (btn) {
+        btn.addEventListener('click', function () { netlifyIdentity.open('login'); });
+      }
     }
   }
 
-  /* ── Bootstrap ───────────────────────────────────────────────────────────────
-     Case A: widget loaded in <head> (login page, homepage) — available immediately.
-     Case B: widget loaded async by components.js (all other pages) — need to poll. */
+  /* ── Bootstrap ────────────────────────────────────────────────────────────── */
+
   function waitAndSetup() {
     if (window.netlifyIdentity) {
       setup();
       return;
     }
+    /* Widget loaded async by components.js — poll until available */
     var tries = 0;
-    var poll  = setInterval(function () {
+    var poll = setInterval(function () {
       if (window.netlifyIdentity) {
         clearInterval(poll);
         setup();
-      } else if (++tries >= 100) { /* give up after ~5 s */
+      } else if (++tries >= 100) {   /* give up after ~5 s */
         clearInterval(poll);
         if (window.location.pathname.indexOf('/login') === 0) {
           var btn = document.getElementById('login-open-btn');

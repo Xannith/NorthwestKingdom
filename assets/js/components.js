@@ -1,48 +1,80 @@
 /**
- * NWK Component Loader
- * Loads shared header, nav, left nav, and footer from /assets/components/
- * Requires a web server (http://); will not work from file:// protocol.
- * Local dev: python3 -m http.server 8080  OR  VS Code Live Server
+ * NWK Component Loader — auth-aware navigation
  *
- * Left nav: loaded into <aside id="site-left-nav"> when that element is present.
- * Pages that want a left nav must include the aside in their HTML inside a .site-body wrapper.
+ * Exposes window.NWK.updateNav(user) which identity.js calls on init/login/logout.
+ * Nav components are loaded based on Netlify Identity auth state, not data-section.
+ *
+ * data-section is still used for page-specific styling (CSS classes on #site-nav),
+ * but does NOT determine which nav HTML is loaded.
+ *
+ * Left nav is injected into every page that does not have data-no-sidenav on <body>.
+ * Pages with data-no-sidenav="true" (login, access-denied) keep their centred layouts.
  */
 (function () {
   'use strict';
 
-  const SECTION_NAV = {
-    public: '/assets/components/nav-public.html',
-    member: '/assets/components/nav-member.html',
-    admin:  '/assets/components/nav-admin.html',
+  /* ── Nav component URLs ───────────────────────────────────────────────────── */
+
+  var TOP_NAV = {
+    public:   '/assets/components/nav-public.html',
+    member:   '/assets/components/nav-member.html',
+    admin:    '/assets/components/nav-admin.html',
+    'no-role': '/assets/components/nav-no-role.html',
   };
 
-  const SECTION_LEFT_NAV = {
-    public: '/assets/components/nav-left-public.html',
-    member: '/assets/components/nav-left-member.html',
-    admin:  '/assets/components/nav-left-admin.html',
+  var LEFT_NAV = {
+    public:   '/assets/components/nav-left-public.html',
+    member:   '/assets/components/nav-left-member.html',
+    admin:    '/assets/components/nav-left-admin.html',
+    'no-role': '/assets/components/nav-left-public.html', /* public content still accessible */
   };
 
-  async function loadHTML(selector, url) {
-    const el = document.querySelector(selector);
-    if (!el) return;
-    try {
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      el.innerHTML = await resp.text();
-    } catch (err) {
-      console.warn(`NWK: failed to load component ${url}:`, err.message);
-      el.innerHTML = `<div style="padding:0.5rem;background:#fdf5dc;font-size:0.8rem;color:#7a5a00;">
-        Navigation unavailable. Open the site via a local server, not directly from a file.
-        <br><code>python3 -m http.server 8080</code>
-      </div>`;
+  /* ── Role detection ───────────────────────────────────────────────────────── */
+
+  function getAuthSection(user) {
+    if (!user) return 'public';
+    var roles = (user.app_metadata && user.app_metadata.roles) || [];
+    /* admin roles */
+    if (roles.indexOf('admin') !== -1 || roles.indexOf('technical-admin') !== -1) {
+      return 'admin';
     }
+    /* member roles */
+    if (roles.indexOf('member') !== -1 ||
+        roles.indexOf('records-steward') !== -1 ||
+        roles.indexOf('content-maintainer') !== -1) {
+      return 'member';
+    }
+    /* logged in but no valid role yet */
+    return 'no-role';
   }
 
-  /* Mark active links in both top nav and left nav */
+  /* ── HTML loader ──────────────────────────────────────────────────────────── */
+
+  function loadHTML(selector, url) {
+    var el = document.querySelector(selector);
+    if (!el) return Promise.resolve();
+    return fetch(url)
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function (html) { el.innerHTML = html; })
+      .catch(function (err) {
+        console.warn('NWK: failed to load ' + url + ':', err.message);
+        el.innerHTML = '<div style="padding:0.5rem;background:#fdf5dc;font-size:0.8rem;color:#7a5a00;">' +
+          'Navigation unavailable. Open the site via a local server.' +
+          '<br><code>python3 -m http.server 8080</code></div>';
+      });
+  }
+
+  /* ── Active-link marking ──────────────────────────────────────────────────── */
+
   function markActiveLinks() {
-    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    var path = window.location.pathname.replace(/\/$/, '') || '/';
     document.querySelectorAll('#site-nav a, #site-left-nav a').forEach(function (a) {
-      const href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
+      var href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
+      a.classList.remove('active');
+      a.removeAttribute('aria-current');
       if (href === '/' && path === '/') {
         a.classList.add('active');
         a.setAttribute('aria-current', 'page');
@@ -53,102 +85,173 @@
     });
   }
 
-  /* Open <details> in the left nav that contains the current page */
+  /* ── Open <details> containing the current page ───────────────────────────── */
+
   function openActiveDetails() {
-    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    var path = window.location.pathname.replace(/\/$/, '') || '/';
     document.querySelectorAll('#site-left-nav details').forEach(function (det) {
-      const links = det.querySelectorAll('a');
-      for (let i = 0; i < links.length; i++) {
-        const href = (links[i].getAttribute('href') || '').replace(/\/$/, '') || '/';
-        if (href !== '/' && path.startsWith(href)) {
-          det.open = true;
-          break;
-        }
+      var links = det.querySelectorAll('a');
+      for (var i = 0; i < links.length; i++) {
+        var href = (links[i].getAttribute('href') || '').replace(/\/$/, '') || '/';
+        if (href !== '/' && path.startsWith(href)) { det.open = true; break; }
       }
     });
   }
 
-  /* Mobile toggle for the top nav */
+  /* ── Mobile top-nav toggle ────────────────────────────────────────────────── */
+
   function initMobileMenu() {
-    const toggle = document.querySelector('.nav-toggle');
-    const navList = document.querySelector('.nav-list');
+    /* Clone toggle to remove any previously attached listener */
+    var toggle = document.querySelector('#site-nav .nav-toggle');
+    var navList = document.querySelector('#site-nav .nav-list');
     if (!toggle || !navList) return;
-    toggle.addEventListener('click', function () {
-      const open = navList.classList.toggle('nav-open');
-      toggle.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && navList.classList.contains('nav-open')) {
-        navList.classList.remove('nav-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.focus();
-      }
+    var fresh = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(fresh, toggle);
+    fresh.addEventListener('click', function () {
+      var open = navList.classList.toggle('nav-open');
+      fresh.setAttribute('aria-expanded', String(open));
     });
   }
 
-  /* Mobile toggle for the left nav */
+  /* ── Mobile left-nav toggle ───────────────────────────────────────────────── */
+
   function initLeftNavMobile() {
-    const toggle = document.getElementById('left-nav-mobile-toggle');
-    const sections = document.getElementById('left-nav-sections');
+    var toggle = document.getElementById('left-nav-mobile-toggle');
+    var sections = document.getElementById('left-nav-sections');
     if (!toggle || !sections) return;
-    toggle.addEventListener('click', function () {
-      const open = sections.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', String(open));
+    var fresh = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(fresh, toggle);
+    fresh.addEventListener('click', function () {
+      var open = sections.classList.toggle('is-open');
+      fresh.setAttribute('aria-expanded', String(open));
     });
+  }
+
+  /* Single global Escape handler — registered once, reads current DOM state */
+  if (!window._nwkEscapeAdded) {
+    window._nwkEscapeAdded = true;
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && sections.classList.contains('is-open')) {
-        sections.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.focus();
+      if (e.key !== 'Escape') return;
+      var navList = document.querySelector('#site-nav .nav-list');
+      if (navList && navList.classList.contains('nav-open')) {
+        navList.classList.remove('nav-open');
+        var t = document.querySelector('#site-nav .nav-toggle');
+        if (t) { t.setAttribute('aria-expanded', 'false'); t.focus(); }
+      }
+      var secs = document.getElementById('left-nav-sections');
+      if (secs && secs.classList.contains('is-open')) {
+        secs.classList.remove('is-open');
+        var lt = document.getElementById('left-nav-mobile-toggle');
+        if (lt) { lt.setAttribute('aria-expanded', 'false'); lt.focus(); }
       }
     });
   }
 
-  function applyNavTheme() {
-    const nav = document.getElementById('site-nav');
-    const section = document.body.dataset.section;
-    if (nav && section && section !== 'public') {
-      nav.classList.add('nav--' + section);
+  /* ── Nav bar colour (not security — visual only) ─────────────────────────── */
+
+  function applyNavTheme(authSection) {
+    var nav = document.getElementById('site-nav');
+    if (!nav) return;
+    nav.classList.remove('nav--member', 'nav--admin');
+    if (authSection === 'member' || authSection === 'no-role') nav.classList.add('nav--member');
+    if (authSection === 'admin') nav.classList.add('nav--admin');
+  }
+
+  /* ── Body auth-state classes (UI only, NOT security) ─────────────────────── */
+
+  function setBodyClass(authSection) {
+    document.body.classList.remove('auth-public', 'auth-member', 'auth-admin', 'auth-no-role', 'nav-has-sidebar');
+    document.body.classList.add('auth-' + authSection);
+    if (authSection === 'member' || authSection === 'admin') {
+      document.body.classList.add('nav-has-sidebar');
     }
   }
 
-  /* Load the Netlify Identity Widget on every page.
-     Required on all pages so invite confirmation links work wherever they land,
-     and so the logout button in member/admin nav is always functional. */
-  function loadIdentityWidget() {
-    if (window.netlifyIdentity) return;
-    if (document.querySelector('script[src*="netlify-identity-widget"]')) return;
-    const s = document.createElement('script');
-    s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-    s.async = true;
-    document.head.appendChild(s);
+  /* ── Left-nav container injection ────────────────────────────────────────── */
+
+  function ensureLeftNav() {
+    if (document.body.dataset.noSidenav) return;
+    if (document.getElementById('site-left-nav')) return;   /* already present */
+    var main = document.getElementById('main-content');
+    if (!main) return;
+
+    var aside = document.createElement('aside');
+    aside.id = 'site-left-nav';
+    aside.setAttribute('aria-label', 'Section navigation');
+
+    if (main.parentElement.classList.contains('site-body')) {
+      /* main is already inside .site-body — just prepend the aside */
+      main.parentElement.insertBefore(aside, main);
+    } else {
+      /* Wrap main in .site-body and insert aside before it */
+      var wrapper = document.createElement('div');
+      wrapper.className = 'site-body';
+      main.parentNode.insertBefore(wrapper, main);
+      wrapper.appendChild(aside);
+      wrapper.appendChild(main);
+    }
   }
 
-  function init() {
-    const section = document.body.dataset.section || 'public';
-    const navUrl = SECTION_NAV[section] || SECTION_NAV.public;
-    const leftNavUrl = SECTION_LEFT_NAV[section] || SECTION_LEFT_NAV.public;
-    const leftNavEl = document.getElementById('site-left-nav');
+  /* ── Main auth-nav update ─── called by identity.js ──────────────────────── */
 
-    loadIdentityWidget();
+  function updateNav(user) {
+    var section = getAuthSection(user);
+    setBodyClass(section);
+    ensureLeftNav();
 
-    const loads = [
-      loadHTML('#site-header', '/assets/components/site-header.html'),
-      loadHTML('#site-nav',    navUrl),
-      loadHTML('#site-footer', '/assets/components/site-footer.html'),
-    ];
-
+    var leftNavEl = document.getElementById('site-left-nav');
+    var loads = [ loadHTML('#site-nav', TOP_NAV[section] || TOP_NAV.public) ];
     if (leftNavEl) {
-      loads.push(loadHTML('#site-left-nav', leftNavUrl));
+      loads.push(loadHTML('#site-left-nav', LEFT_NAV[section] || LEFT_NAV.public));
     }
 
-    Promise.all(loads).then(function () {
-      applyNavTheme();
+    return Promise.all(loads).then(function () {
+      applyNavTheme(section);
       markActiveLinks();
       initMobileMenu();
       if (leftNavEl) {
         initLeftNavMobile();
         openActiveDetails();
+      }
+    });
+  }
+
+  /* ── Identity Widget dynamic loader ──────────────────────────────────────── */
+
+  function loadIdentityWidget() {
+    if (window.netlifyIdentity) return;
+    if (document.querySelector('script[src*="netlify-identity-widget"]')) return;
+    var s = document.createElement('script');
+    s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
+  /* ── Initialisation ───────────────────────────────────────────────────────── */
+
+  function init() {
+    /* Expose updateNav and role helpers for identity.js */
+    window.NWK = window.NWK || {};
+    window.NWK.updateNav     = updateNav;
+    window.NWK.getAuthSection = getAuthSection;
+
+    loadIdentityWidget();
+
+    /* Load header and footer first (auth-independent) */
+    Promise.all([
+      loadHTML('#site-header', '/assets/components/site-header.html'),
+      loadHTML('#site-footer', '/assets/components/site-footer.html'),
+    ]).then(function () {
+      /* Render public nav immediately while we wait for identity to initialise.
+         identity.js will call NWK.updateNav(user) once the widget fires 'init'. */
+      return updateNav(null);
+    }).then(function () {
+      /* Fast path: if widget is already loaded (blocking <script> in <head>)
+         and a cached user exists in localStorage, update nav right away without
+         waiting for the async 'init' event. */
+      if (window.netlifyIdentity && typeof window.netlifyIdentity.currentUser === 'function') {
+        var cached = window.netlifyIdentity.currentUser();
+        if (cached) updateNav(cached);
       }
     });
   }
