@@ -112,11 +112,25 @@
     }
   }
 
+  /* Load the Netlify Identity Widget on every page.
+     Required on all pages so invite confirmation links work wherever they land,
+     and so the logout button in member/admin nav is always functional. */
+  function loadIdentityWidget() {
+    if (window.netlifyIdentity) return;
+    if (document.querySelector('script[src*="netlify-identity-widget"]')) return;
+    const s = document.createElement('script');
+    s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function init() {
     const section = document.body.dataset.section || 'public';
     const navUrl = SECTION_NAV[section] || SECTION_NAV.public;
     const leftNavUrl = SECTION_LEFT_NAV[section] || SECTION_LEFT_NAV.public;
     const leftNavEl = document.getElementById('site-left-nav');
+
+    loadIdentityWidget();
 
     const loads = [
       loadHTML('#site-header', '/assets/components/site-header.html'),

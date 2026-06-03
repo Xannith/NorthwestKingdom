@@ -31,12 +31,39 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Redirect bare domain to www (or remove this block to do the opposite)
-# Netlify handles the canonical domain automatically once set in the dashboard.
+# ── Identity-protected routes ─────────────────────────────────────────────────
+# Rules are evaluated in order. The first matching rule wins.
+# Netlify Identity must be enabled in the dashboard for these to take effect.
 
-# Friendly 404
+# Member area: members and admins may enter; everyone else goes to login.
+[[redirects]]
+  from = "/member/*"
+  to   = "/member/:splat"
+  status = 200
+  conditions = {Role = ["member", "admin"]}
+
+[[redirects]]
+  from = "/member/*"
+  to   = "/login/?redirect=/member/:splat"
+  status = 302
+  force = true
+
+# Admin area: admins only; everyone else goes to login.
+[[redirects]]
+  from = "/admin/*"
+  to   = "/admin/:splat"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+[[redirects]]
+  from = "/admin/*"
+  to   = "/login/?redirect=/admin/:splat"
+  status = 302
+  force = true
+
+# ── Friendly 404 ──────────────────────────────────────────────────────────────
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to   = "/index.html"
   status = 404
   force = false

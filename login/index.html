@@ -17,22 +17,12 @@
         <h1>Member Login</h1>
         <p class="login-subhead">Northwest Kingdom resident access</p>
 
-        <div class="notice mb-lg">
-          <strong>Authentication not yet implemented.</strong>
-          This is a placeholder login form. See <code>SECURITY_NOTES.md</code> for the authentication roadmap.
-        </div>
+        <p id="login-loading" class="text-muted mb-lg">Opening login form&hellip;</p>
 
-        <form method="post" action="#" autocomplete="on" aria-label="Member login form">
-          <div class="form-field">
-            <label class="form-label" for="email">Email address <span class="required" aria-hidden="true">*</span></label>
-            <input class="form-input" type="email" id="email" name="email" autocomplete="email" required placeholder="your@email.com">
-          </div>
-          <div class="form-field">
-            <label class="form-label" for="password">Password <span class="required" aria-hidden="true">*</span></label>
-            <input class="form-input" type="password" id="password" name="password" autocomplete="current-password" required>
-          </div>
-          <button class="btn btn--primary btn--full" type="submit">Log In</button>
-        </form>
+        <button class="btn btn--primary btn--full" id="login-open-btn" hidden
+                aria-label="Open login form">
+          Open Login Form
+        </button>
 
         <div class="login-links">
           <a href="/login/forgot-password.html">Forgot password?</a>
@@ -46,5 +36,6 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/identity.js"></script>
 </body>
 </html>
