@@ -6,6 +6,10 @@
   <title>Northwest Kingdom — Neighborhood Hub</title>
   <meta name="description" content="Northwest Kingdom neighborhood information hub — records, events, projects, and community continuity for NWK residents within the Miccosukee Land Co-op.">
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <!-- Identity Widget loaded here so invite confirmation links (#invite_token=...)
+       that land on the homepage are processed correctly. identity.js handles
+       the post-login redirect to /member/dashboard/. -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body data-section="public">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -56,5 +60,6 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/identity.js"></script>
 </body>
 </html>

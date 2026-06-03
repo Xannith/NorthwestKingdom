@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Denied — Northwest Kingdom</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="public">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Public navigation"></nav>
+
+  <main id="main-content">
+    <div class="container page-wrapper container--narrow">
+      <div class="page-header">
+        <h1>Access Denied</h1>
+        <p>Your account does not have permission to access that area.</p>
+      </div>
+
+      <div class="notice">
+        <p>
+          If you believe this is a mistake, contact the neighborhood coordinator.
+          Your account may not have the correct role assigned yet.
+          See <a href="/NETLIFY_IDENTITY_SETUP.md">NETLIFY_IDENTITY_SETUP.md</a> for how roles are configured.
+        </p>
+      </div>
+
+      <div class="btn-row" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:var(--spacing-lg);">
+        <a href="/" class="btn btn--primary">Return to Homepage</a>
+        <a href="#" data-logout class="btn btn--secondary">Log Out</a>
+      </div>
+
+      <p class="text-muted text-small" style="margin-top:var(--spacing-xl);">
+        If you were recently invited, make sure the coordinator has assigned your account
+        the correct role (<code>member</code> or <code>admin</code>) in the Netlify Identity dashboard.
+        See <a href="/login/account-help.html">account help</a> for more information.
+      </p>
+    </div>
+  </main>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/identity.js"></script>
+</body>
+</html>

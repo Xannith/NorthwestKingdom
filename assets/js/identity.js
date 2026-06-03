@@ -1,22 +1,66 @@
 /**
  * NWK Identity
- * Handles Netlify Identity login, logout, and redirect flows.
+ * Netlify Identity event handlers: login redirect, logout, invite/confirmation flow.
  *
- * The Netlify Identity Widget is loaded dynamically by components.js.
- * This script polls until the widget is available, then attaches handlers.
+ * LOADING ORDER REQUIREMENT:
+ *   The Netlify Identity Widget script must be loaded before this script runs.
+ *   On login/index.html and index.html, the widget is loaded in <head> as a blocking
+ *   script. On all other pages, components.js loads it dynamically (async) — the
+ *   polling fallback below handles that case.
  *
- * Dashboard setup required (one-time, in Netlify):
- *   Site → Identity → Enable Identity
- *   Identity → Registration → Set to "Invite only"
- *   Identity → Invite user → enter email → assign role: member or admin
+ * ROLE ASSIGNMENT NOTE:
+ *   netlify.toml redirect conditions check app_metadata.roles — NOT user_metadata.
+ *   In the Netlify dashboard: Identity → Users → select user → App metadata → set:
+ *     {"roles": ["admin"]}    or    {"roles": ["member"]}
+ *   Setting a role in "User metadata" has NO effect on redirect access control.
  */
 (function () {
   'use strict';
 
-  function setup() {
-    var isLoginPage = window.location.pathname.indexOf('/login') === 0;
+  var DASHBOARD = '/member/dashboard/';
+  var ACCESS_DENIED = '/access-denied/';
+  var REDIRECT_KEY = 'nwk_redirect_attempt'; /* sessionStorage key for loop detection */
 
-    /* Logout — use event delegation so it works after nav is injected */
+  /* ── Redirect after a successful login ─────────────────────────────────────
+     Runs from ANY page. Needed so invite links (which land on the homepage)
+     redirect the user to the member dashboard after they set their password.    */
+  function onLogin() {
+    netlifyIdentity.close();
+    var isLoginPage = window.location.pathname.indexOf('/login') === 0;
+    if (isLoginPage) {
+      var p = new URLSearchParams(window.location.search);
+      var dest = p.get('redirect');
+      sessionStorage.removeItem(REDIRECT_KEY);
+      window.location.href = dest ? decodeURIComponent(dest) : DASHBOARD;
+    } else {
+      window.location.href = DASHBOARD;
+    }
+  }
+
+  /* ── Detect redirect loops for already-logged-in users ─────────────────────
+     When a user is logged in but lacks the required role:
+       1. They visit /member/dashboard/
+       2. Netlify CDN redirects them to /login/?redirect=/member/dashboard/
+       3. identity.js init sees they're logged in → redirects to /member/dashboard/
+       4. Netlify CDN redirects them again → LOOP
+     Detection: use document.referrer (cleared in private mode) + sessionStorage fallback. */
+  function redirectWithLoopDetection(dest) {
+    var decoded = decodeURIComponent(dest);
+    var referrerLoop = document.referrer && document.referrer.indexOf(decoded) !== -1;
+    var sessionLoop  = sessionStorage.getItem(REDIRECT_KEY) === decoded;
+
+    if (referrerLoop || sessionLoop) {
+      sessionStorage.removeItem(REDIRECT_KEY);
+      window.location.href = ACCESS_DENIED;
+    } else {
+      sessionStorage.setItem(REDIRECT_KEY, decoded);
+      window.location.href = decoded;
+    }
+  }
+
+  function setup() {
+
+    /* ── Logout ─────────────────────────────────────────────────────────────── */
     document.addEventListener('click', function (e) {
       var el = e.target.closest('[data-logout]');
       if (el) {
@@ -29,53 +73,60 @@
       window.location.href = '/';
     });
 
-    /* Login page behaviour */
+    /* ── Login ──────────────────────────────────────────────────────────────── */
+    netlifyIdentity.on('login', onLogin);
+
+    /* ── Login-page-specific init behaviour ─────────────────────────────────── */
+    var isLoginPage = window.location.pathname.indexOf('/login') === 0;
     if (isLoginPage) {
-      var loginBtn = document.getElementById('login-open-btn');
-      var loginLoading = document.getElementById('login-loading');
-
-      netlifyIdentity.on('init', function (user) {
-        if (user) {
-          /* Already authenticated — send them to their destination */
-          var p = new URLSearchParams(window.location.search);
-          window.location.href = decodeURIComponent(p.get('redirect') || '/member/dashboard/');
-          return;
-        }
-        /* Open the login modal automatically */
-        netlifyIdentity.open('login');
-        /* Show fallback button in case modal is dismissed */
-        if (loginLoading) loginLoading.hidden = true;
-        if (loginBtn) loginBtn.hidden = false;
-      });
-
-      netlifyIdentity.on('login', function () {
-        netlifyIdentity.close();
-        var p = new URLSearchParams(window.location.search);
-        window.location.href = decodeURIComponent(p.get('redirect') || '/member/dashboard/');
-      });
-
-      if (loginBtn) {
-        loginBtn.addEventListener('click', function () {
+      var btn = document.getElementById('login-open-btn');
+      if (btn) {
+        btn.addEventListener('click', function () {
           netlifyIdentity.open('login');
         });
       }
+
+      netlifyIdentity.on('init', function (user) {
+        if (user) {
+          /* Already authenticated — redirect, with loop detection */
+          var p    = new URLSearchParams(window.location.search);
+          var dest = p.get('redirect');
+          if (dest) {
+            redirectWithLoopDetection(dest);
+          } else {
+            sessionStorage.removeItem(REDIRECT_KEY);
+            window.location.href = DASHBOARD;
+          }
+          return;
+        }
+        /* Not logged in: auto-open the login modal */
+        netlifyIdentity.open('login');
+      });
     }
   }
 
-  /* Poll until the Identity Widget becomes available (loaded async by components.js) */
+  /* ── Bootstrap ───────────────────────────────────────────────────────────────
+     Case A: widget loaded in <head> (login page, homepage) — available immediately.
+     Case B: widget loaded async by components.js (all other pages) — need to poll. */
   function waitAndSetup() {
     if (window.netlifyIdentity) {
       setup();
       return;
     }
     var tries = 0;
-    var poll = setInterval(function () {
-      tries++;
+    var poll  = setInterval(function () {
       if (window.netlifyIdentity) {
         clearInterval(poll);
         setup();
-      } else if (tries >= 100) { /* give up after ~5 s */
+      } else if (++tries >= 100) { /* give up after ~5 s */
         clearInterval(poll);
+        if (window.location.pathname.indexOf('/login') === 0) {
+          var btn = document.getElementById('login-open-btn');
+          if (btn) {
+            btn.textContent = 'Login widget could not load — try refreshing.';
+            btn.disabled = true;
+          }
+        }
       }
     }, 50);
   }
