@@ -509,6 +509,11 @@ blockquote {
   color: var(--color-member);
 }
 
+/* Auth-gate: only show to non-authenticated visitors */
+.auth-gate { display: none; }
+body.auth-public .auth-gate,
+body.auth-no-role .auth-gate { display: flex; }
+
 /* --- Notice banner ---------------------------------------- */
 .notice {
   background: var(--color-accent-bg);
