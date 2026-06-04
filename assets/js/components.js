@@ -121,6 +121,7 @@
       { href: '/member/nwk-hub/',          label: 'NWK Hub' },
       { href: '/member/nwk-hub/notices.html', label: 'Notices' },
       { href: '/member/calendar/',         label: 'Calendar' },
+      { href: '/member/neighbor-skills/',  label: 'Neighbor Skills' },
       { href: '/public/photos/',           label: 'Photos' },
       { href: '/member/documents/',        label: 'Documents' },
       { href: '/member/search/',           label: 'Search' },
