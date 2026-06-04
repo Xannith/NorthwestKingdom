@@ -14,18 +14,49 @@
     Referrer-Policy = "no-referrer-when-downgrade"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# Cache static assets aggressively, HTML never
+# ── Cache headers ──────────────────────────────────────────────────────────────
+# IMPORTANT: JS files and nav component HTML are updated regularly.
+# Do NOT use "immutable" for any file whose content may change between deploys
+# without a filename change. "immutable" tells browsers never to revalidate —
+# users would run stale code until they manually clear their browser cache.
+
+# JavaScript — always revalidate so updates take effect on next page load
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Nav component HTML — always revalidate (nav changes when we update them)
+[[headers]]
+  for = "/assets/components/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# CSS — medium cache (changes less often; 1 hour is safe without content hashing)
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Vendor JS (minified, stable — ok to cache longer but not immutable)
+[[headers]]
+  for = "/assets/js/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Images and other static assets — cache aggressively (filenames don't change)
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=31536000"
 
+# HTML pages — never cache
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Data files (photo metadata JSON) must not be cached — they change as photos are added
+# Data files
 [[headers]]
   for = "/data/*"
   [headers.values]

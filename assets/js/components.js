@@ -1,32 +1,61 @@
 /**
  * NWK Component Loader — auth-aware navigation
  *
- * Exposes window.NWK.updateNav(user) which identity.js calls on init/login/logout.
- * Nav components are loaded based on Netlify Identity auth state, not data-section.
+ * This single script handles ALL navigation rendering, including auth state.
+ * Every HTML page loads this script. identity.js is only needed on pages
+ * with login-specific logic (modal, redirect).
  *
- * data-section is still used for page-specific styling (CSS classes on #site-nav),
- * but does NOT determine which nav HTML is loaded.
+ * How to enable debug logging:
+ *   In browser console: localStorage.setItem('nwk_debug','1') then refresh.
+ *   To disable: localStorage.removeItem('nwk_debug')
+ *   Or append ?nwk_debug to the URL for one-time debug output.
  *
- * Left nav is injected into every page that does not have data-no-sidenav on <body>.
- * Pages with data-no-sidenav="true" (login, access-denied) keep their centred layouts.
+ * Browser console checks:
+ *   typeof NWK                          // "object"
+ *   typeof NWK.updateNav               // "function"
+ *   typeof netlifyIdentity             // "object"
+ *   netlifyIdentity.currentUser()      // user or null
+ *   document.getElementById('site-left-nav')   // aside element or null
+ *   document.querySelector('.left-nav')         // nav element or null
+ *   document.body.className            // includes "auth-member" or "auth-admin"
  */
 (function () {
   'use strict';
 
+  /* ── Debug logging ─────────────────────────────────────────────────────────── */
+
+  var _dbg = window.location.search.indexOf('nwk_debug') !== -1 ||
+             localStorage.getItem('nwk_debug') === '1';
+
+  function log() {
+    if (!_dbg) return;
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift('[NWK]');
+    console.log.apply(console, args);
+  }
+
+  log('components.js loaded, readyState=' + document.readyState);
+
+  /* ── Race-condition guard ──────────────────────────────────────────────────── */
+  /* Set to true the first time identity.js fires init/login with the real user.
+     Prevents updateNav(null) in the header/footer load chain from overwriting
+     a correct member/admin nav that identity already rendered.                   */
+  var _navAuthSet = false;
+
   /* ── Nav component URLs ───────────────────────────────────────────────────── */
 
   var TOP_NAV = {
-    public:   '/assets/components/nav-public.html',
-    member:   '/assets/components/nav-member.html',
-    admin:    '/assets/components/nav-admin.html',
-    'no-role': '/assets/components/nav-no-role.html',
+    'public':   '/assets/components/nav-public.html',
+    'member':   '/assets/components/nav-member.html',
+    'admin':    '/assets/components/nav-admin.html',
+    'no-role':  '/assets/components/nav-no-role.html',
   };
 
   var LEFT_NAV = {
-    public:   '/assets/components/nav-left-public.html',
-    member:   '/assets/components/nav-left-member.html',
-    admin:    '/assets/components/nav-left-admin.html',
-    'no-role': '/assets/components/nav-left-public.html', /* public content still accessible */
+    'public':   '/assets/components/nav-left-public.html',
+    'member':   '/assets/components/nav-left-member.html',
+    'admin':    '/assets/components/nav-left-admin.html',
+    'no-role':  '/assets/components/nav-left-public.html',
   };
 
   /* ── Role detection ───────────────────────────────────────────────────────── */
@@ -34,27 +63,29 @@
   function getAuthSection(user) {
     if (!user) return 'public';
     var roles = (user.app_metadata && user.app_metadata.roles) || [];
-    /* admin roles */
     if (roles.indexOf('admin') !== -1 || roles.indexOf('technical-admin') !== -1) {
       return 'admin';
     }
-    /* member roles */
     if (roles.indexOf('member') !== -1 ||
         roles.indexOf('records-steward') !== -1 ||
         roles.indexOf('content-maintainer') !== -1) {
       return 'member';
     }
-    /* logged in but no valid role yet */
     return 'no-role';
   }
 
   /* ── HTML loader ──────────────────────────────────────────────────────────── */
 
   function loadHTML(selector, url) {
+    log('loadHTML', selector, url);
     var el = document.querySelector(selector);
-    if (!el) return Promise.resolve();
+    if (!el) {
+      log('loadHTML: element not found:', selector);
+      return Promise.resolve();
+    }
     return fetch(url)
       .then(function (resp) {
+        log('fetch', url, 'status=' + resp.status);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         return resp.text();
       })
@@ -62,8 +93,8 @@
       .catch(function (err) {
         console.warn('NWK: failed to load ' + url + ':', err.message);
         el.innerHTML = '<div style="padding:0.5rem;background:#fdf5dc;font-size:0.8rem;color:#7a5a00;">' +
-          'Navigation unavailable. Open the site via a local server.' +
-          '<br><code>python3 -m http.server 8080</code></div>';
+          'Navigation unavailable. Serve via a local server (<code>python3 -m http.server 8080</code>).' +
+          '</div>';
       });
   }
 
@@ -101,7 +132,6 @@
   /* ── Mobile top-nav toggle ────────────────────────────────────────────────── */
 
   function initMobileMenu() {
-    /* Clone toggle to remove any previously attached listener */
     var toggle = document.querySelector('#site-nav .nav-toggle');
     var navList = document.querySelector('#site-nav .nav-list');
     if (!toggle || !navList) return;
@@ -127,7 +157,7 @@
     });
   }
 
-  /* Single global Escape handler — registered once, reads current DOM state */
+  /* Global Escape handler — registered once */
   if (!window._nwkEscapeAdded) {
     window._nwkEscapeAdded = true;
     document.addEventListener('keydown', function (e) {
@@ -147,7 +177,7 @@
     });
   }
 
-  /* ── Nav bar colour (not security — visual only) ─────────────────────────── */
+  /* ── Nav bar colour ───────────────────────────────────────────────────────── */
 
   function applyNavTheme(authSection) {
     var nav = document.getElementById('site-nav');
@@ -157,52 +187,73 @@
     if (authSection === 'admin') nav.classList.add('nav--admin');
   }
 
-  /* ── Body auth-state classes (UI only, NOT security) ─────────────────────── */
+  /* ── Body auth-state classes (UI only — not security) ────────────────────── */
 
   function setBodyClass(authSection) {
-    document.body.classList.remove('auth-public', 'auth-member', 'auth-admin', 'auth-no-role', 'nav-has-sidebar');
+    document.body.classList.remove(
+      'auth-public', 'auth-member', 'auth-admin', 'auth-no-role', 'nav-has-sidebar'
+    );
     document.body.classList.add('auth-' + authSection);
     if (authSection === 'member' || authSection === 'admin') {
       document.body.classList.add('nav-has-sidebar');
     }
+    log('body class set to auth-' + authSection);
   }
 
   /* ── Left-nav container injection ────────────────────────────────────────── */
 
   function ensureLeftNav() {
-    if (document.body.dataset.noSidenav) return;
-    if (document.getElementById('site-left-nav')) return;   /* already present */
+    if (document.body.dataset.noSidenav) {
+      log('ensureLeftNav: skipped (data-no-sidenav)');
+      return;
+    }
+    if (document.getElementById('site-left-nav')) {
+      log('ensureLeftNav: already present');
+      return;
+    }
     var main = document.getElementById('main-content');
-    if (!main) return;
+    if (!main) {
+      log('ensureLeftNav: #main-content not found');
+      return;
+    }
 
     var aside = document.createElement('aside');
     aside.id = 'site-left-nav';
     aside.setAttribute('aria-label', 'Section navigation');
 
-    if (main.parentElement.classList.contains('site-body')) {
-      /* main is already inside .site-body — just prepend the aside */
+    if (main.parentElement && main.parentElement.classList.contains('site-body')) {
+      log('ensureLeftNav: inserting aside into existing .site-body');
       main.parentElement.insertBefore(aside, main);
     } else {
-      /* Wrap main in .site-body and insert aside before it */
+      log('ensureLeftNav: wrapping main in .site-body and inserting aside');
       var wrapper = document.createElement('div');
       wrapper.className = 'site-body';
       main.parentNode.insertBefore(wrapper, main);
       wrapper.appendChild(aside);
       wrapper.appendChild(main);
     }
+    log('ensureLeftNav: injection complete');
   }
 
-  /* ── Main auth-nav update ─── called by identity.js ──────────────────────── */
+  /* ── Main auth-nav update ─────────────────────────────────────────────────── */
 
   function updateNav(user) {
     var section = getAuthSection(user);
+    var roles = user && user.app_metadata && user.app_metadata.roles;
+    log('updateNav section=' + section + ' roles=' + JSON.stringify(roles));
+
     setBodyClass(section);
     ensureLeftNav();
 
     var leftNavEl = document.getElementById('site-left-nav');
-    var loads = [ loadHTML('#site-nav', TOP_NAV[section] || TOP_NAV.public) ];
+    log('site-left-nav element:', leftNavEl ? 'found' : 'NOT FOUND');
+
+    var topUrl  = TOP_NAV[section]  || TOP_NAV['public'];
+    var leftUrl = LEFT_NAV[section] || LEFT_NAV['public'];
+
+    var loads = [ loadHTML('#site-nav', topUrl) ];
     if (leftNavEl) {
-      loads.push(loadHTML('#site-left-nav', LEFT_NAV[section] || LEFT_NAV.public));
+      loads.push(loadHTML('#site-left-nav', leftUrl));
     }
 
     return Promise.all(loads).then(function () {
@@ -213,46 +264,137 @@
         initLeftNavMobile();
         openActiveDetails();
       }
+      log('nav render complete for section=' + section);
     });
   }
 
-  /* ── Identity Widget dynamic loader ──────────────────────────────────────── */
+  /* ── Identity Widget loader ───────────────────────────────────────────────── */
 
   function loadIdentityWidget() {
-    if (window.netlifyIdentity) return;
-    if (document.querySelector('script[src*="netlify-identity-widget"]')) return;
+    if (window.netlifyIdentity) {
+      log('identity widget already present');
+      return;
+    }
+    if (document.querySelector('script[src*="netlify-identity-widget"]')) {
+      log('identity widget script tag already in DOM');
+      return;
+    }
+    log('loading identity widget dynamically');
     var s = document.createElement('script');
     s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
     s.async = true;
     document.head.appendChild(s);
   }
 
+  /* ── Identity event handlers ──────────────────────────────────────────────── */
+  /* Registered once from every page via components.js.                          */
+  /* identity.js is only needed for login-page-specific redirect logic.          */
+
+  var _identityHandlersRegistered = false;
+
+  function registerIdentityHandlers() {
+    if (_identityHandlersRegistered) return;
+    _identityHandlersRegistered = true;
+    log('registering identity event handlers');
+
+    /* Logout button — event delegation, works after nav is injected */
+    if (!window._nwkLogoutHandlerAdded) {
+      window._nwkLogoutHandlerAdded = true;
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('[data-logout]');
+        if (el) {
+          e.preventDefault();
+          log('logout button clicked');
+          netlifyIdentity.logout();
+        }
+      });
+    }
+
+    /* Init — fires on every page with current user (or null if not logged in).
+       This is the primary mechanism that makes auth-aware nav work everywhere. */
+    netlifyIdentity.on('init', function (user) {
+      _navAuthSet = true;
+      log('identity init event, user=' + (user ? user.email : 'null'));
+      updateNav(user);
+    });
+
+    /* Login — update nav after successful login */
+    netlifyIdentity.on('login', function (user) {
+      _navAuthSet = true;
+      log('identity login event, user=' + (user ? user.email : 'null'));
+      updateNav(user);
+    });
+
+    /* Logout — reset to public nav and redirect home */
+    netlifyIdentity.on('logout', function () {
+      _navAuthSet = false;
+      log('identity logout event');
+      updateNav(null);
+      window.location.href = '/';
+    });
+  }
+
+  /* ── Poll for Identity Widget, then register handlers ────────────────────── */
+
+  function pollForIdentity() {
+    if (window.netlifyIdentity) {
+      log('identity widget available immediately (blocking script in <head>)');
+      registerIdentityHandlers();
+      /* Fast path: cached user from localStorage */
+      if (typeof window.netlifyIdentity.currentUser === 'function') {
+        var cached = window.netlifyIdentity.currentUser();
+        if (cached) {
+          log('fast path: cached user found, section=' + getAuthSection(cached));
+          _navAuthSet = true;
+          updateNav(cached);
+        }
+      }
+      return;
+    }
+    var tries = 0;
+    var poll = setInterval(function () {
+      if (window.netlifyIdentity) {
+        clearInterval(poll);
+        log('identity widget loaded after ~' + (tries * 50) + 'ms');
+        registerIdentityHandlers();
+      } else if (++tries >= 100) {
+        clearInterval(poll);
+        console.warn('NWK: identity widget did not load after 5s. ' +
+          'Enable debug: localStorage.setItem("nwk_debug","1")');
+      }
+    }, 50);
+  }
+
   /* ── Initialisation ───────────────────────────────────────────────────────── */
 
   function init() {
-    /* Expose updateNav and role helpers for identity.js */
+    log('init() called');
+
+    /* Expose globals for identity.js and browser console inspection */
     window.NWK = window.NWK || {};
-    window.NWK.updateNav     = updateNav;
+    window.NWK.updateNav      = updateNav;
     window.NWK.getAuthSection = getAuthSection;
+    window.NWK.log            = log;
+
+    log('window.NWK registered');
 
     loadIdentityWidget();
+    pollForIdentity();
 
-    /* Load header and footer first (auth-independent) */
+    /* Load header and footer (auth-independent) */
     Promise.all([
       loadHTML('#site-header', '/assets/components/site-header.html'),
       loadHTML('#site-footer', '/assets/components/site-footer.html'),
     ]).then(function () {
-      /* Render public nav immediately while we wait for identity to initialise.
-         identity.js will call NWK.updateNav(user) once the widget fires 'init'. */
-      return updateNav(null);
-    }).then(function () {
-      /* Fast path: if widget is already loaded (blocking <script> in <head>)
-         and a cached user exists in localStorage, update nav right away without
-         waiting for the async 'init' event. */
-      if (window.netlifyIdentity && typeof window.netlifyIdentity.currentUser === 'function') {
-        var cached = window.netlifyIdentity.currentUser();
-        if (cached) updateNav(cached);
+      log('header/footer loaded, _navAuthSet=' + _navAuthSet);
+      /* Render public nav only if identity has not already set the correct nav.
+         If identity fired 'init' before this resolved, _navAuthSet is true
+         and we skip updateNav(null) to avoid overwriting the member/admin nav. */
+      if (!_navAuthSet) {
+        log('identity not yet ready — rendering public nav as default');
+        return updateNav(null);
       }
+      log('identity already set nav — skipping public default');
     });
   }
 
