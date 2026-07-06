@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Shirts — “I Gave” Preorder — Northwest Kingdom</title>
+  <meta name="description" content="Commit to buy an “I Gave” community t-shirt. $18 cash, collected in bulk rounds. Choose your size and color and reserve your shirt for the next round.">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-section="public" data-no-sidenav="true">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="site-header"></div>
+  <nav id="site-nav" aria-label="Public navigation"></nav>
+
+  <main id="main-content">
+    <div class="container page-wrapper">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><span aria-current="page">Community Shirts</span></li>
+        </ol>
+      </nav>
+
+      <div class="page-header">
+        <span class="section-badge section-badge--public">Community · Open to everyone</span>
+        <h1>“I Gave” Community Shirts</h1>
+        <p>
+          Reserve your neighborhood “I Gave” t-shirt. This is a cash-commitment
+          preorder — no payment is taken online. We collect commitments, then place
+          bulk orders with our print vendor in rounds. Pay in cash when your order is
+          placed or at pickup.
+        </p>
+      </div>
+
+      <!-- ── Hero: mockup photo + design artwork ─────────────────────────── -->
+      <section class="shirt-hero" aria-label="Shirt preview">
+        <div class="shirt-hero__photo">
+          <img src="/img/i-gave-shirt-demo1.jpg"
+               alt="Mockup of the “I Gave” community t-shirt showing the front design.">
+        </div>
+        <figure class="shirt-artwork">
+          <img src="/img/i_gave_2026_v7_3x_transparent.png"
+               alt="The “I Gave” 2026 design artwork.">
+          <figcaption class="shirt-artwork__caption">The 2026 “I Gave” design</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── Price + options at a glance ─────────────────────────────────── -->
+      <div class="shirt-facts">
+        <div class="shirt-facts__price">$18.00 <span>per shirt · all sizes</span></div>
+        <div class="shirt-facts__detail">
+          <strong>Sizes:</strong> S, M, L, XL, 2XL, 3XL, 4XL, 5XL<br>
+          <strong>Colors:</strong> Sand, Mint Green, Light Blue, Light Pink
+        </div>
+      </div>
+
+      <!-- ── Order form ──────────────────────────────────────────────────── -->
+      <h2>Reserve your shirts</h2>
+      <p class="text-muted">
+        Add a row for each size and color you want. You can order more than one shirt
+        in a single commitment.
+      </p>
+
+      <!--
+        Netlify Forms: this single static form is what Netlify detects at build time,
+        so every field name below (name, phone, order-items, total-quantity,
+        total-dollars, commitment, bot-field) is declared here. With JavaScript, the
+        line-item rows are serialized into "order-items" and the form is submitted via
+        AJAX (see /assets/js/shirt-order.js). Without JavaScript, the single static row
+        below still submits natively to Netlify and lands on /shirts/thank-you.html.
+      -->
+      <form
+        id="shirt-order-form"
+        name="shirt-orders"
+        method="POST"
+        action="/shirts/thank-you.html"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        novalidate
+        aria-label="Shirt commitment order form"
+      >
+        <input type="hidden" name="form-name" value="shirt-orders">
+        <!-- Honeypot: real people leave this empty; bots tend to fill it. -->
+        <p hidden aria-hidden="true">
+          <label>Don’t fill this out if you’re human:
+            <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+        </p>
+        <!-- Serialized order fields (populated by JS; declared here for Netlify). -->
+        <input type="hidden" name="order-items"    id="order-items">
+        <input type="hidden" name="total-quantity" id="total-quantity">
+        <input type="hidden" name="total-dollars"  id="total-dollars">
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="shirt-name">Name <span class="required">*</span></label>
+            <input class="form-input" type="text" id="shirt-name" name="name"
+                   autocomplete="name" required aria-required="true"
+                   aria-describedby="shirt-name-error" placeholder="Your name">
+            <p class="field-error" id="shirt-name-error"></p>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="shirt-phone">Phone <span class="required">*</span></label>
+            <input class="form-input" type="tel" id="shirt-phone" name="phone"
+                   autocomplete="tel" inputmode="tel" required aria-required="true"
+                   pattern="[0-9()+\-.\s]{10,}"
+                   aria-describedby="shirt-phone-error" placeholder="(555) 123-4567">
+            <p class="form-hint">So we can reach you when your round is placed.</p>
+            <p class="field-error" id="shirt-phone-error"></p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Your shirts <span class="required">*</span></label>
+
+          <ul class="color-legend" aria-label="Available colors">
+            <li><span class="swatch swatch--sand" aria-hidden="true"></span>Sand</li>
+            <li><span class="swatch swatch--mint-green" aria-hidden="true"></span>Mint Green</li>
+            <li><span class="swatch swatch--light-blue" aria-hidden="true"></span>Light Blue</li>
+            <li><span class="swatch swatch--light-pink" aria-hidden="true"></span>Light Pink</li>
+          </ul>
+
+          <div class="shirt-lines" id="shirt-lines" data-single>
+            <div class="shirt-line">
+              <div class="form-field shirt-line__size">
+                <span class="shirt-line__label">Size</span>
+                <select class="form-select" name="size" aria-label="Shirt size">
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="2XL">2XL</option>
+                  <option value="3XL">3XL</option>
+                  <option value="4XL">4XL</option>
+                  <option value="5XL">5XL</option>
+                </select>
+              </div>
+              <div class="form-field shirt-line__color">
+                <span class="shirt-line__label">Color</span>
+                <select class="form-select" name="color" aria-label="Shirt color">
+                  <option value="Sand">Sand</option>
+                  <option value="Mint Green">Mint Green</option>
+                  <option value="Light Blue">Light Blue</option>
+                  <option value="Light Pink">Light Pink</option>
+                </select>
+              </div>
+              <div class="form-field shirt-line__qty">
+                <span class="shirt-line__label">Qty</span>
+                <input class="form-input" type="number" name="quantity"
+                       min="1" max="50" step="1" value="1" inputmode="numeric"
+                       aria-label="Quantity">
+              </div>
+              <button type="button" class="shirt-line__remove" aria-label="Remove this shirt">&times;</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary" id="add-shirt-btn">
+            + Add another shirt
+          </button>
+          <span id="shirt-lines-anchor" tabindex="-1" class="sr-only"></span>
+          <p class="field-error" id="shirt-lines-error"></p>
+        </div>
+
+        <div class="order-total" aria-live="polite">
+          <div>
+            <span class="order-total__label">Order total</span><br>
+            <span class="order-total__count" id="order-total-count">1 shirt × $18</span>
+          </div>
+          <span class="order-total__amount" id="order-total-amount">$18.00</span>
+        </div>
+
+        <div class="form-field">
+          <label class="checkbox-label" for="shirt-commitment">
+            <input type="checkbox" id="shirt-commitment" name="commitment"
+                   value="I commit to paying in cash when my order is placed or at pickup."
+                   aria-describedby="shirt-commitment-error">
+            <span>
+              I commit to paying <strong><span id="commit-amount">$18.00</span></strong>
+              in cash when my order is placed or at pickup. Orders are placed in bulk
+              rounds, and unpaid commitments may be dropped from a round.
+              <span class="required">*</span>
+            </span>
+          </label>
+          <p class="field-error" id="shirt-commitment-error"></p>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg" id="shirt-submit-btn">
+          Submit my commitment
+        </button>
+      </form>
+
+      <div class="submit-result" id="shirt-submit-result" role="status" aria-live="polite"></div>
+
+      <hr class="divider">
+
+      <!-- ── Order Status (driven by data/shirt-order-rounds.json) ───────── -->
+      <section aria-labelledby="order-status-heading">
+        <h2 id="order-status-heading">Order Status</h2>
+        <p class="text-muted" id="round-campaign">I Gave 2026</p>
+        <p id="round-note">
+          Orders are batched roughly every 3 weeks over 12 weeks (4 rounds).
+        </p>
+
+        <div class="round-timeline" id="round-timeline">
+          <!-- Rounds render here from JSON. -->
+        </div>
+        <p class="notice" id="round-status-fallback" style="display:none;"></p>
+      </section>
+
+    </div>
+  </main>
+
+  <div id="site-footer" role="contentinfo"></div>
+  <script src="/assets/js/components.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/shirt-order.js"></script>
+</body>
+</html>

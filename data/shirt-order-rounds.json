@@ -1,0 +1,10 @@
+{
+  "campaign": "I Gave 2026",
+  "note": "Orders are batched roughly every 3 weeks over 12 weeks. Commit any time — your shirt goes into the next open round.",
+  "rounds": [
+    { "round": 1, "cutoffDate": "2026-07-27", "status": "collecting", "detail": "" },
+    { "round": 2, "cutoffDate": "2026-08-17", "status": "upcoming", "detail": "" },
+    { "round": 3, "cutoffDate": "2026-09-07", "status": "upcoming", "detail": "" },
+    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "" }
+  ]
+}
