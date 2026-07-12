@@ -54,20 +54,77 @@
         </div>
       </div>
 
+      <!-- ── Second shirt: Evergreen ─────────────────────────────────────── -->
+      <h2 id="evergreen-shirt">“I Gave” Shirt — Evergreen</h2>
+      <section class="shirt-hero" aria-label="Evergreen shirt preview">
+        <div class="shirt-hero__photo">
+          <img src="/img/i-gave-shirt-demo2-front1.jpg"
+               alt="Front view of the evergreen “I Gave” community t-shirt.">
+        </div>
+        <div class="shirt-product__copy">
+          <p>
+            The same “I Gave” front design, printed on a rich evergreen tee — one
+            bold color for folks who want the collection in a single deep green.
+            Reserved the same way as the shirt above: a cash-commitment preorder,
+            no payment taken online. Pick your size and reserve.
+          </p>
+        </div>
+      </section>
+
+      <div class="shirt-facts">
+        <div class="shirt-facts__price">$20.00 <span>per shirt · all sizes</span></div>
+        <div class="shirt-facts__detail">
+          <strong>Sizes:</strong> S, M, L, XL, 2XL, 3XL, 4XL, 5XL<br>
+          <strong>Color:</strong> Green
+        </div>
+      </div>
+
+      <!-- ── Button: 2026 badge ──────────────────────────────────────────── -->
+      <h2 id="i-gave-button">“I Gave” 2026 Button</h2>
+      <section class="shirt-hero" aria-label="“I Gave” 2026 button preview">
+        <figure class="shirt-artwork">
+          <img src="/img/i_gave_2026_v8.png"
+               alt="The “I Gave” 2026 badge artwork used for the button.">
+          <figcaption class="shirt-artwork__caption">
+            This is the badge artwork — the physical pin-back button will feature
+            this design. (No product photo yet.)
+          </figcaption>
+        </figure>
+        <div class="shirt-product__copy">
+          <p>
+            A little pin-back button carrying the 2026 “I Gave” badge. Pin it to a
+            bag, jacket, or lanyard to show you pitched in. Same cash-commitment
+            preorder as the shirts — grab as many as you like.
+          </p>
+        </div>
+      </section>
+
+      <div class="shirt-facts">
+        <div class="shirt-facts__price">$4.00 <span>each · one size</span></div>
+        <div class="shirt-facts__detail">
+          <strong>Size:</strong> One size · pin-back button
+        </div>
+      </div>
+
       <!-- ── Order form ──────────────────────────────────────────────────── -->
-      <h2>Reserve your shirts</h2>
+      <h2>Reserve your order</h2>
       <p class="text-muted">
-        Add a row for each size and color you want. You can order more than one shirt
-        in a single commitment.
+        Add a row for each size and color you want, and mix in any buttons. You can
+        order more than one item — shirts and buttons — in a single commitment.
       </p>
 
       <!--
         Netlify Forms: this single static form is what Netlify detects at build time,
-        so every field name below (name, phone, order-items, total-quantity,
-        total-dollars, commitment, bot-field) is declared here. With JavaScript, the
-        line-item rows are serialized into "order-items" and the form is submitted via
-        AJAX (see /assets/js/shirt-order.js). Without JavaScript, the single static row
-        below still submits natively to Netlify and lands on /shirts/thank-you.html.
+        so every field name below (name, phone, order-items, order-shirts-green,
+        order-buttons, total-quantity, total-dollars, commitment, bot-field) is
+        declared here. With JavaScript, the line-item rows for each product are
+        serialized into their own field (order-items = classic shirt,
+        order-shirts-green = green shirt, order-buttons = buttons) and the form is
+        submitted via AJAX (see /assets/js/shirt-order.js). Without JavaScript, the
+        static rows below still submit natively to Netlify — each product uses
+        distinct field names (size/color/quantity, size-green/quantity-green,
+        quantity-button) so submissions stay unambiguous — and land on
+        /shirts/thank-you.html.
       -->
       <form
         id="shirt-order-form"
@@ -86,9 +143,11 @@
             <input name="bot-field" tabindex="-1" autocomplete="off"></label>
         </p>
         <!-- Serialized order fields (populated by JS; declared here for Netlify). -->
-        <input type="hidden" name="order-items"    id="order-items">
-        <input type="hidden" name="total-quantity" id="total-quantity">
-        <input type="hidden" name="total-dollars"  id="total-dollars">
+        <input type="hidden" name="order-items"        id="order-items">
+        <input type="hidden" name="order-shirts-green" id="order-shirts-green">
+        <input type="hidden" name="order-buttons"      id="order-buttons">
+        <input type="hidden" name="total-quantity"     id="total-quantity">
+        <input type="hidden" name="total-dollars"      id="total-dollars">
 
         <div class="form-row">
           <div class="form-field">
@@ -110,8 +169,11 @@
         </div>
 
         <div class="form-field">
-          <label class="form-label">Your shirts <span class="required">*</span></label>
+          <label class="form-label">Your order <span class="required">*</span></label>
+          <p class="form-hint">Choose at least one item below. Set a quantity of 0 to skip a product.</p>
 
+          <!-- ── Classic “I Gave” shirt — $18 ─────────────────────────────── -->
+          <h3 class="order-group__title">“I Gave” shirt — $18 each</h3>
           <ul class="color-legend" aria-label="Available colors">
             <li><span class="swatch swatch--sand" aria-hidden="true"></span>Sand</li>
             <li><span class="swatch swatch--mint-green" aria-hidden="true"></span>Mint Green</li>
@@ -119,7 +181,7 @@
             <li><span class="swatch swatch--light-pink" aria-hidden="true"></span>Light Pink</li>
           </ul>
 
-          <div class="shirt-lines" id="shirt-lines" data-single>
+          <div class="shirt-lines" id="shirt-lines" data-product="classic" data-add-btn="add-shirt-btn" data-single>
             <div class="shirt-line">
               <div class="form-field shirt-line__size">
                 <span class="shirt-line__label">Size</span>
@@ -156,16 +218,67 @@
           <button type="button" class="btn btn--secondary" id="add-shirt-btn">
             + Add another shirt
           </button>
+
+          <!-- ── Evergreen “I Gave” shirt — $20, green only ───────────────── -->
+          <h3 class="order-group__title">“I Gave” Evergreen shirt — $20 each</h3>
+          <p class="order-group__meta">Color: Green</p>
+
+          <div class="shirt-lines" id="shirt-lines-green" data-product="green" data-add-btn="add-shirt-green-btn" data-single>
+            <div class="shirt-line shirt-line--no-color">
+              <div class="form-field shirt-line__size">
+                <span class="shirt-line__label">Size</span>
+                <select class="form-select" name="size-green" aria-label="Evergreen shirt size">
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="2XL">2XL</option>
+                  <option value="3XL">3XL</option>
+                  <option value="4XL">4XL</option>
+                  <option value="5XL">5XL</option>
+                </select>
+              </div>
+              <div class="form-field shirt-line__qty">
+                <span class="shirt-line__label">Qty</span>
+                <input class="form-input" type="number" name="quantity-green"
+                       min="0" max="50" step="1" value="0" inputmode="numeric"
+                       aria-label="Evergreen shirt quantity">
+              </div>
+              <button type="button" class="shirt-line__remove" aria-label="Remove this shirt">&times;</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary" id="add-shirt-green-btn">
+            + Add another green shirt
+          </button>
+
+          <!-- ── “I Gave” 2026 button — $4, one size ──────────────────────── -->
+          <h3 class="order-group__title">“I Gave” 2026 button — $4 each</h3>
+          <p class="order-group__meta">One size · pin-back button</p>
+
+          <div class="shirt-lines" id="shirt-lines-button" data-product="button" data-single>
+            <div class="shirt-line shirt-line--qty-only">
+              <div class="form-field shirt-line__qty">
+                <span class="shirt-line__label">Qty</span>
+                <input class="form-input" type="number" name="quantity-button"
+                       min="0" max="50" step="1" value="0" inputmode="numeric"
+                       aria-label="Button quantity">
+              </div>
+            </div>
+          </div>
+
           <span id="shirt-lines-anchor" tabindex="-1" class="sr-only"></span>
           <p class="field-error" id="shirt-lines-error"></p>
         </div>
 
         <div class="order-total" aria-live="polite">
-          <div>
-            <span class="order-total__label">Order total</span><br>
-            <span class="order-total__count" id="order-total-count">1 shirt × $18</span>
+          <ul class="order-total__lines" id="order-total-lines">
+            <li>1 × “I Gave” shirt <span>$18.00</span></li>
+          </ul>
+          <div class="order-total__row">
+            <span class="order-total__label">Order total</span>
+            <span class="order-total__amount" id="order-total-amount">$18.00</span>
           </div>
-          <span class="order-total__amount" id="order-total-amount">$18.00</span>
         </div>
 
         <div class="form-field">

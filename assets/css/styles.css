@@ -2404,3 +2404,68 @@ tr:hover td { background: var(--color-surface-alt); }
   .shirt-line__qty    { grid-area: qty; }
   .shirt-line__remove { grid-area: remove; justify-self: end; align-self: center; }
 }
+
+/* ── Multi-product ordering (green shirt, buttons) ────────── */
+
+/* Text column beside a product image in the .shirt-hero grid */
+.shirt-product__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.shirt-product__copy p { margin: 0; }
+
+/* Per-product group headings inside the order form */
+.order-group__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--color-text);
+  margin: var(--spacing-lg) 0 var(--spacing-xs);
+}
+.order-group__meta {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-sm);
+}
+
+/* Line variants: green shirt drops the color column; buttons keep only qty */
+.shirt-line--no-color { grid-template-columns: 1fr 84px auto; }
+.shirt-line--qty-only { grid-template-columns: 96px 1fr; }
+
+/* Order-total breakdown (per-product subtotals above the grand total) */
+.order-total__lines {
+  list-style: none;
+  width: 100%;
+  margin: 0 0 var(--spacing-sm);
+  padding: 0;
+  font-size: 0.9rem;
+}
+.order-total__lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: 2px 0;
+  color: var(--color-text);
+}
+.order-total__lines li span { color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.order-total__lines .order-total__empty { color: var(--color-text-muted); font-style: italic; display: block; }
+.order-total__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .shirt-line--no-color {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "size qty"
+      "remove remove";
+  }
+  .shirt-line--qty-only {
+    grid-template-columns: 1fr;
+    grid-template-areas: "qty";
+  }
+}

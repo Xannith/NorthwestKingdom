@@ -3,22 +3,33 @@
  * Client-side behavior for the public "I Gave" Community Shirts preorder page.
  *
  * Responsibilities:
- *   1. Line items — add/remove size+color+quantity rows in a single order.
- *   2. Live order total — quantity x $18, shown before submission.
- *   3. Submission — serialize line items into readable fields and POST to
- *      Netlify Forms via AJAX (form name: "shirt-orders").
+ *   1. Line items — add/remove size+color+quantity rows for each product in a
+ *      single order. Three products share the form:
+ *        - classic "I Gave" shirt ($18, size + color)
+ *        - Evergreen "I Gave" shirt ($20, size only, green)
+ *        - "I Gave" 2026 button ($4, quantity only, one size)
+ *   2. Live order total — per-product subtotals + grand total, shown before submit.
+ *   3. Submission — serialize each product's line items into its own readable
+ *      field and POST to Netlify Forms via AJAX (form name: "shirt-orders").
  *   4. Order Status — fetch data/shirt-order-rounds.json and render the rounds.
  *
  * This is a cash-commitment preorder, not a payment system. No card data is
  * collected or sent. Client-side validation is for UX only.
  *
- * Graceful degradation: if this script does not run, the page's single static
- * shirt row submits natively to Netlify (see the <form> in /shirts/index.html).
+ * Graceful degradation: if this script does not run, the page's static rows
+ * submit natively to Netlify (see the <form> in /shirts/index.html). Each product
+ * uses distinct field names so native submissions stay unambiguous.
  */
 (function () {
   'use strict';
 
-  var PRICE = 18; /* dollars per shirt, flat, all sizes/colors */
+  /* Per-product config. Keyed by the container's data-product attribute.
+     `field` is the Netlify hidden input the product's line items serialize into. */
+  var PRODUCTS = {
+    classic: { price: 18, unit: 'shirt',  name: '“I Gave” shirt',           field: 'order-items' },
+    green:   { price: 20, unit: 'shirt',  name: '“I Gave” Evergreen shirt', color: 'Green', field: 'order-shirts-green' },
+    button:  { price: 4,  unit: 'button', name: '“I Gave” 2026 button',     field: 'order-buttons' }
+  };
 
   function $(id) { return document.getElementById(id); }
 
@@ -26,108 +37,145 @@
     return '$' + Number(n).toFixed(2);
   }
 
+  function capitalize(s) {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  }
+
   /* ── Line items ────────────────────────────────────────── */
 
   function initLineItems() {
-    var container = $('shirt-lines');
-    var addBtn    = $('add-shirt-btn');
-    if (!container) return;
+    var containers = document.querySelectorAll('.shirt-lines');
 
-    /* Capture a clean template from the first static row (before any edits). */
-    var firstRow = container.querySelector('.shirt-line');
-    if (!firstRow) return;
-    var template = firstRow.cloneNode(true);
+    containers.forEach(function (container) {
+      var addId  = container.getAttribute('data-add-btn');
+      var addBtn = addId ? $(addId) : null;
 
-    function resetRow(row) {
-      row.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
-      var qty = row.querySelector('.shirt-line__qty input');
-      if (qty) qty.value = '1';
-      return row;
-    }
+      /* Capture a clean template from the first static row (before any edits). */
+      var firstRow = container.querySelector('.shirt-line');
+      if (!firstRow) return;
+      var template = firstRow.cloneNode(true);
 
-    function updateSingleFlag() {
-      var rows = container.querySelectorAll('.shirt-line');
-      if (rows.length <= 1) {
-        container.setAttribute('data-single', '');
-      } else {
-        container.removeAttribute('data-single');
+      function resetRow(row) {
+        row.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
+        var qty = row.querySelector('.shirt-line__qty input');
+        if (qty) qty.value = '1';
+        return row;
       }
-    }
 
-    function wireRow(row) {
-      var remove = row.querySelector('.shirt-line__remove');
-      if (remove) {
-        remove.addEventListener('click', function () {
-          var rows = container.querySelectorAll('.shirt-line');
-          if (rows.length <= 1) return; /* never remove the last row */
-          row.parentNode.removeChild(row);
-          updateSingleFlag();
-          recalcTotal();
+      function updateSingleFlag() {
+        var rows = container.querySelectorAll('.shirt-line');
+        if (rows.length <= 1) {
+          container.setAttribute('data-single', '');
+        } else {
+          container.removeAttribute('data-single');
+        }
+      }
+
+      function wireRow(row) {
+        var remove = row.querySelector('.shirt-line__remove');
+        if (remove) {
+          remove.addEventListener('click', function () {
+            var rows = container.querySelectorAll('.shirt-line');
+            if (rows.length <= 1) return; /* never remove the last row */
+            row.parentNode.removeChild(row);
+            updateSingleFlag();
+            recalcTotal();
+          });
+        }
+        row.querySelectorAll('select, input').forEach(function (el) {
+          el.addEventListener('input', recalcTotal);
+          el.addEventListener('change', recalcTotal);
         });
       }
-      row.querySelectorAll('select, input').forEach(function (el) {
-        el.addEventListener('input', recalcTotal);
-        el.addEventListener('change', recalcTotal);
-      });
-    }
 
-    /* Wire the existing static row. */
-    wireRow(firstRow);
-    updateSingleFlag();
+      /* Wire the existing static row. */
+      wireRow(firstRow);
+      updateSingleFlag();
 
-    if (addBtn) {
-      addBtn.addEventListener('click', function () {
-        var row = resetRow(template.cloneNode(true));
-        container.appendChild(row);
-        wireRow(row);
-        updateSingleFlag();
-        recalcTotal();
-        var firstField = row.querySelector('select, input');
-        if (firstField) firstField.focus();
-      });
-    }
+      if (addBtn) {
+        addBtn.addEventListener('click', function () {
+          var row = resetRow(template.cloneNode(true));
+          container.appendChild(row);
+          wireRow(row);
+          updateSingleFlag();
+          recalcTotal();
+          var firstField = row.querySelector('select, input');
+          if (firstField) firstField.focus();
+        });
+      }
+    });
   }
 
-  /* Read all rows into a normalized order object. */
+  /* Read every product's rows into a normalized order object. */
   function collectOrder() {
-    var rows = document.querySelectorAll('#shirt-lines .shirt-line');
-    var items = [];
-    var totalQty = 0;
+    var products = [];
+    var grandQty = 0;
+    var grandDollars = 0;
 
-    rows.forEach(function (row) {
-      var size  = row.querySelector('.shirt-line__size select');
-      var color = row.querySelector('.shirt-line__color select');
-      var qtyEl = row.querySelector('.shirt-line__qty input');
-      var qty   = qtyEl ? parseInt(qtyEl.value, 10) : 0;
-      if (!size || !color || !qtyEl) return;
-      if (!size.value || !color.value) return;
-      if (!qty || qty < 1) return;
+    document.querySelectorAll('.shirt-lines').forEach(function (container) {
+      var key = container.getAttribute('data-product');
+      var cfg = PRODUCTS[key];
+      if (!cfg) return;
 
-      items.push({ size: size.value, color: color.value, qty: qty });
-      totalQty += qty;
+      var items = [];
+      var qty = 0;
+
+      container.querySelectorAll('.shirt-line').forEach(function (row) {
+        var sizeEl  = row.querySelector('.shirt-line__size select');
+        var colorEl = row.querySelector('.shirt-line__color select');
+        var qtyEl   = row.querySelector('.shirt-line__qty input');
+        var n = qtyEl ? parseInt(qtyEl.value, 10) : 0;
+
+        if (!qtyEl || !n || n < 1) return;         /* qty 0 / blank → not ordered */
+        if (sizeEl && !sizeEl.value) return;        /* size required when present */
+
+        var size  = sizeEl ? sizeEl.value : '';
+        var color = colorEl && colorEl.value ? colorEl.value : (cfg.color || '');
+
+        var parts = [];
+        if (size)  parts.push(size);
+        if (color) parts.push(color);
+        var label = parts.length ? parts.join(' ') : capitalize(cfg.unit);
+
+        items.push({ size: size, color: color, qty: n, label: label });
+        qty += n;
+      });
+
+      var dollars = qty * cfg.price;
+      products.push({
+        key: key,
+        cfg: cfg,
+        items: items,
+        qty: qty,
+        dollars: dollars,
+        text: items.map(function (i) { return i.qty + 'x ' + i.label; }).join('; ')
+      });
+
+      grandQty += qty;
+      grandDollars += dollars;
     });
 
-    return {
-      items: items,
-      totalQty: totalQty,
-      totalDollars: totalQty * PRICE,
-      text: items.map(function (i) {
-        return i.qty + 'x ' + i.size + ' ' + i.color;
-      }).join('; ')
-    };
+    return { products: products, totalQty: grandQty, totalDollars: grandDollars };
   }
 
   function recalcTotal() {
     var order = collectOrder();
+    var linesEl = $('order-total-lines');
     var amountEl = $('order-total-amount');
-    var countEl  = $('order-total-count');
     var commitLabelEl = $('commit-amount');
-    if (amountEl) amountEl.textContent = money(order.totalDollars);
-    if (countEl) {
-      countEl.textContent = order.totalQty === 1
-        ? '1 shirt × $18'
-        : order.totalQty + ' shirts × $18';
+
+    if (linesEl) {
+      var rows = order.products.filter(function (p) { return p.qty > 0; }).map(function (p) {
+        var unitLabel = p.qty === 1 ? p.cfg.unit : p.cfg.unit + 's';
+        return '<li>' + p.qty + ' × ' + p.cfg.name + ' (' + p.qty + ' ' + unitLabel +
+               ' @ ' + money(p.cfg.price) + ') <span>' + money(p.dollars) + '</span></li>';
+      });
+      linesEl.innerHTML = rows.length
+        ? rows.join('')
+        : '<li class="order-total__empty">No items selected yet.</li>';
     }
+
+    if (amountEl) amountEl.textContent = money(order.totalDollars);
     if (commitLabelEl) commitLabelEl.textContent = money(order.totalDollars);
     return order;
   }
@@ -188,9 +236,9 @@
         setError('shirt-phone', 'shirt-phone-error', '');
       }
 
-      if (order.items.length === 0) {
+      if (order.totalQty === 0) {
         setError('shirt-lines-anchor', 'shirt-lines-error',
-          'Please choose a size, color, and quantity for at least one shirt.');
+          'Please choose at least one shirt or button (set a quantity of 1 or more).');
         valid = false;
       } else {
         setError('shirt-lines-anchor', 'shirt-lines-error', '');
@@ -211,7 +259,10 @@
       }
 
       /* Populate hidden fields so a native submit (fallback) would also carry them. */
-      $('order-items').value    = order.text;
+      order.products.forEach(function (p) {
+        var el = $(p.cfg.field);
+        if (el) el.value = p.text;
+      });
       $('total-quantity').value = String(order.totalQty);
       $('total-dollars').value  = order.totalDollars.toFixed(2);
 
@@ -223,12 +274,12 @@
         'form-name':      'shirt-orders',
         'name':           nameEl.value.trim(),
         'phone':          phoneEl.value.trim(),
-        'order-items':    order.text,
         'total-quantity': String(order.totalQty),
         'total-dollars':  order.totalDollars.toFixed(2),
         'commitment':     commitmentText,
         'bot-field':      ''
       };
+      order.products.forEach(function (p) { payload[p.cfg.field] = p.text; });
 
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -278,19 +329,23 @@
     var box  = $('shirt-submit-result');
     if (!box) return;
 
-    var lines = order.items.map(function (i) {
-      return '<li>' + i.qty + ' × ' + escapeHtml(i.size) + ' ' +
-             escapeHtml(i.color) + '</li>';
+    var groups = order.products.filter(function (p) { return p.qty > 0; }).map(function (p) {
+      var lines = p.items.map(function (i) {
+        return '<li>' + i.qty + ' × ' + escapeHtml(i.label) + '</li>';
+      }).join('');
+      return '<p class="mb-0"><strong>' + escapeHtml(p.cfg.name) + '</strong></p>' +
+             '<ul>' + lines + '</ul>';
     }).join('');
+
+    var unitTotal = order.totalQty + ' item' + (order.totalQty === 1 ? '' : 's');
 
     box.className = 'submit-result submit-result--success is-visible';
     box.innerHTML =
       '<p class="submit-result__title">Thank you, ' + escapeHtml(name) + '! Your commitment is in.</p>' +
       '<p>You’ve committed to buy:</p>' +
-      '<ul>' + lines + '</ul>' +
-      '<p><strong>' + order.totalQty + ' shirt' + (order.totalQty === 1 ? '' : 's') +
-      ' &mdash; ' + money(order.totalDollars) + ' total</strong>, payable in cash ' +
-      'when your order is placed or at pickup.</p>' +
+      groups +
+      '<p><strong>' + unitTotal + ' &mdash; ' + money(order.totalDollars) + ' total</strong>, ' +
+      'payable in cash when your order is placed or at pickup.</p>' +
       '<p class="mb-0">Orders are placed in bulk rounds roughly every 3 weeks. ' +
       'We’ll contact you at the phone number you gave when the next round is ' +
       'placed so you can arrange payment and pickup. See the Order Status below for ' +
