@@ -21,7 +21,9 @@ var crypto = require('crypto');
 var core = require('../assets/js/order-core.js');
 var products = require('../data/products.json');
 
-var SELLER_EMAIL = 'josh@joshuabechtel.com';
+/* Seller notification copy. Set SELLER_NOTIFY_EMAIL in Netlify env to change it
+   without a code change (e.g. back to josh@joshuabechtel.com later). */
+var SELLER_EMAIL = process.env.SELLER_NOTIFY_EMAIL || 'kal75el@gmail.com';
 /* Override in Netlify env once the sending domain is verified with the provider. */
 var FROM = process.env.INVOICE_FROM_EMAIL || 'Northwest Kingdom <orders@northwestkingdom.com>';
 var CAMPAIGN = products.campaign || 'I Gave';
