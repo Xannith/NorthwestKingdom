@@ -4,6 +4,11 @@
 [build]
   publish = "."
   command = ""
+  # Netlify Forms "submission-created" event handler lives here (invoice emails).
+  functions = "functions"
+
+[functions]
+  node_bundler = "esbuild"
 
 # Security and performance headers for all pages
 [[headers]]
