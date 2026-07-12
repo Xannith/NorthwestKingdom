@@ -55,7 +55,7 @@
       </div>
 
       <!-- ── Second shirt: Evergreen ─────────────────────────────────────── -->
-      <h2 id="evergreen-shirt">“I Gave” Shirt — Evergreen</h2>
+      <h2 id="evergreen-shirt">“I Gave” Shirt: Evergreen</h2>
       <section class="shirt-hero" aria-label="Evergreen shirt preview">
         <div class="shirt-hero__photo">
           <img src="/img/i-gave-shirt-demo2-front1.jpg"
@@ -115,16 +115,17 @@
 
       <!--
         Netlify Forms: this single static form is what Netlify detects at build time,
-        so every field name below (name, phone, order-items, order-shirts-green,
-        order-buttons, total-quantity, total-dollars, commitment, bot-field) is
-        declared here. With JavaScript, the line-item rows for each product are
-        serialized into their own field (order-items = classic shirt,
-        order-shirts-green = green shirt, order-buttons = buttons) and the form is
-        submitted via AJAX (see /assets/js/shirt-order.js). Without JavaScript, the
-        static rows below still submit natively to Netlify — each product uses
-        distinct field names (size/color/quantity, size-green/quantity-green,
-        quantity-button) so submissions stay unambiguous — and land on
-        /shirts/thank-you.html.
+        so every field name below (name, email, phone, order-lines, order-items,
+        order-shirts-green, order-buttons, total-quantity, total-dollars, commitment,
+        bot-field) is declared here. With JavaScript, the line-item rows for each
+        product are serialized into order-lines (machine-readable JSON, re-priced
+        server-side by functions/submission-created.js) plus per-product human fields
+        (order-items = classic shirt, order-shirts-green = green shirt,
+        order-buttons = buttons), and the form is submitted via AJAX (see
+        /assets/js/shirt-order.js). Without JavaScript, the static rows below still
+        submit natively to Netlify — each product uses distinct field names
+        (size/color/quantity, size-green/quantity-green, quantity-button) so
+        submissions stay unambiguous — and land on /shirts/thank-you.html.
       -->
       <form
         id="shirt-order-form"
@@ -142,7 +143,10 @@
           <label>Don’t fill this out if you’re human:
             <input name="bot-field" tabindex="-1" autocomplete="off"></label>
         </p>
-        <!-- Serialized order fields (populated by JS; declared here for Netlify). -->
+        <!-- Serialized order fields (populated by JS; declared here for Netlify).
+             order-lines is the machine-readable JSON the submission-created
+             function re-prices server-side from data/products.json. -->
+        <input type="hidden" name="order-lines"        id="order-lines">
         <input type="hidden" name="order-items"        id="order-items">
         <input type="hidden" name="order-shirts-green" id="order-shirts-green">
         <input type="hidden" name="order-buttons"      id="order-buttons">
@@ -158,14 +162,23 @@
             <p class="field-error" id="shirt-name-error"></p>
           </div>
           <div class="form-field">
-            <label class="form-label" for="shirt-phone">Phone <span class="required">*</span></label>
-            <input class="form-input" type="tel" id="shirt-phone" name="phone"
-                   autocomplete="tel" inputmode="tel" required aria-required="true"
-                   pattern="[0-9()+\-.\s]{10,}"
-                   aria-describedby="shirt-phone-error" placeholder="(555) 123-4567">
-            <p class="form-hint">So we can reach you when your round is placed.</p>
-            <p class="field-error" id="shirt-phone-error"></p>
+            <label class="form-label" for="shirt-email">Email <span class="required">*</span></label>
+            <input class="form-input" type="email" id="shirt-email" name="email"
+                   autocomplete="email" inputmode="email" required aria-required="true"
+                   aria-describedby="shirt-email-error" placeholder="you@example.com">
+            <p class="form-hint">We’ll email your order summary and receipt here.</p>
+            <p class="field-error" id="shirt-email-error"></p>
           </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="shirt-phone">Phone <span class="required">*</span></label>
+          <input class="form-input" type="tel" id="shirt-phone" name="phone"
+                 autocomplete="tel" inputmode="tel" required aria-required="true"
+                 pattern="[0-9()+\-.\s]{10,}"
+                 aria-describedby="shirt-phone-error" placeholder="(555) 123-4567">
+          <p class="form-hint">So we can reach you when your round is placed.</p>
+          <p class="field-error" id="shirt-phone-error"></p>
         </div>
 
         <div class="form-field">
@@ -173,7 +186,7 @@
           <p class="form-hint">Choose at least one item below. Set a quantity of 0 to skip a product.</p>
 
           <!-- ── Classic “I Gave” shirt — $18 ─────────────────────────────── -->
-          <h3 class="order-group__title">“I Gave” shirt — $18 each</h3>
+          <h3 class="order-group__title">“I Gave” shirt: $18 each</h3>
           <ul class="color-legend" aria-label="Available colors">
             <li><span class="swatch swatch--sand" aria-hidden="true"></span>Sand</li>
             <li><span class="swatch swatch--mint-green" aria-hidden="true"></span>Mint Green</li>
@@ -220,7 +233,7 @@
           </button>
 
           <!-- ── Evergreen “I Gave” shirt — $20, green only ───────────────── -->
-          <h3 class="order-group__title">“I Gave” Evergreen shirt — $20 each</h3>
+          <h3 class="order-group__title">“I Gave” Evergreen shirt: $20 each</h3>
           <p class="order-group__meta">Color: Green</p>
 
           <div class="shirt-lines" id="shirt-lines-green" data-product="green" data-add-btn="add-shirt-green-btn" data-single>
@@ -253,7 +266,7 @@
           </button>
 
           <!-- ── “I Gave” 2026 button — $4, one size ──────────────────────── -->
-          <h3 class="order-group__title">“I Gave” 2026 button — $4 each</h3>
+          <h3 class="order-group__title">“I Gave” 2026 button: $4 each</h3>
           <p class="order-group__meta">One size · pin-back button</p>
 
           <div class="shirt-lines" id="shirt-lines-button" data-product="button" data-single>
@@ -325,6 +338,7 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/order-core.js"></script>
   <script src="/assets/js/shirt-order.js"></script>
 </body>
 </html>
