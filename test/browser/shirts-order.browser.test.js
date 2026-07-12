@@ -126,6 +126,19 @@ async function setRow(page, containerId, index, opts) {
     ok('checkbox text is $64.00', state.commit === '$64.00', state.commit);
     ok('Evergreen line present in summary', state.lines.some((l) => /Evergreen/.test(l)));
     ok('button line present in summary', state.lines.some((l) => /button/.test(l)));
+
+    // ── Submit button gated on the commitment checkbox ──
+    const disabledOnLoad = await page.$eval('#shirt-submit-btn', (b) => b.disabled);
+    ok('Submit is DISABLED until the commitment box is checked', disabledOnLoad === true);
+    await page.click('#shirt-commitment'); // check it
+    await wait(30);
+    const enabledAfterCheck = await page.$eval('#shirt-submit-btn', (b) => b.disabled);
+    ok('Submit ENABLES once the commitment box is checked', enabledAfterCheck === false);
+    await page.click('#shirt-commitment'); // uncheck it
+    await wait(30);
+    const disabledAfterUncheck = await page.$eval('#shirt-submit-btn', (b) => b.disabled);
+    ok('Submit DISABLES again if the box is unchecked', disabledAfterUncheck === true);
+
     ok('zero console errors / page errors', consoleErrors.length === 0, JSON.stringify(consoleErrors));
   } catch (err) {
     failures++;

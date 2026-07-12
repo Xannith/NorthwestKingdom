@@ -401,7 +401,7 @@
         })
         .catch(function () {
           if (submitBtn) {
-            submitBtn.disabled = false;
+            submitBtn.disabled = !commitEl.checked;
             submitBtn.classList.remove('btn--loading');
             submitBtn.textContent = 'Submit my commitment';
           }
@@ -420,10 +420,17 @@
       var el = $(id);
       if (el) el.addEventListener('input', function () { setError(id, id + '-error', ''); });
     });
+    /* The cash commitment is mandatory: keep Submit disabled until it's checked. */
     var commit = $('shirt-commitment');
-    if (commit) commit.addEventListener('change', function () {
-      if (commit.checked) setError('shirt-commitment', 'shirt-commitment-error', '');
-    });
+    function syncSubmitState() {
+      var checked = !!(commit && commit.checked);
+      if (submitBtn) submitBtn.disabled = !checked;
+      var hint = $('shirt-submit-hint');
+      if (hint) hint.style.display = checked ? 'none' : '';
+      if (checked) setError('shirt-commitment', 'shirt-commitment-error', '');
+    }
+    if (commit) commit.addEventListener('change', syncSubmitState);
+    syncSubmitState();
   }
 
   function showConfirmation(order, name) {

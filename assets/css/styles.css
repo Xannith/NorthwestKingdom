@@ -571,6 +571,20 @@ body.auth-no-role .auth-gate { display: flex; }
   text-decoration: none;
 }
 
+/* Disabled buttons (e.g. Submit before the commitment box is checked) read as
+   inactive and ignore hover styling. */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.btn--primary:disabled:hover,
+.btn--primary[disabled]:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
 .btn--secondary {
   background: var(--color-surface);
   color: var(--color-primary);

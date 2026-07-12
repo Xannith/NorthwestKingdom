@@ -309,9 +309,13 @@
           <p class="field-error" id="shirt-commitment-error"></p>
         </div>
 
-        <button type="submit" class="btn btn--primary btn--lg" id="shirt-submit-btn">
+        <button type="submit" class="btn btn--primary btn--lg" id="shirt-submit-btn"
+                disabled aria-describedby="shirt-submit-hint">
           Submit my commitment
         </button>
+        <p class="form-hint" id="shirt-submit-hint">
+          Check the commitment box above to enable this button.
+        </p>
       </form>
 
       <div class="submit-result" id="shirt-submit-result" role="status" aria-live="polite"></div>
@@ -338,7 +342,7 @@
   <div id="site-footer" role="contentinfo"></div>
   <script src="/assets/js/components.js"></script>
   <script src="/assets/js/main.js"></script>
-  <script src="/assets/js/order-core.js?v=20260712b"></script>
-  <script src="/assets/js/shirt-order.js?v=20260712b"></script>
+  <script src="/assets/js/order-core.js?v=20260712c"></script>
+  <script src="/assets/js/shirt-order.js?v=20260712c"></script>
 </body>
 </html>
