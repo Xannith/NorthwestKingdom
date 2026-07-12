@@ -48,70 +48,105 @@
         PRODUCTS_BY_ID = {};
         (data.products || []).forEach(function (p) { PRODUCTS_BY_ID[p.id] = p; });
       })
-      .catch(function () {
+      .catch(function (err) {
         /* Leave the static default totals in place; submit still works and the
-           server re-derives the order authoritatively from products.json. */
+           server re-derives the order authoritatively from products.json.
+           Log loudly — a silent failure here looks like "only the $18 shirt
+           counts", since the live total can no longer recompute. */
         PRODUCTS_DATA = null;
+        console.error('[shirt-order] Could not load /data/products.json — live ' +
+          'order totals are disabled until reload (submissions still work; the ' +
+          'server re-prices the order).', err);
       });
   }
 
-  /* ── Line items ────────────────────────────────────────── */
+  /* ── Line items ──────────────────────────────────────────
+   *
+   * Wiring uses EVENT DELEGATION on the stable <form> element rather than
+   * per-element listeners. Cloned rows and the add-row buttons therefore never
+   * need to be individually bound — they can't "detach" from the logic — and a
+   * failure preparing one product section cannot silently disable the others
+   * (each section's setup is guarded and logged loudly).
+   */
+
+  var ROW_TEMPLATES = {};   // containerId -> pristine .shirt-line node
+  var ADD_TO = {};          // add-button id -> containerId it appends to
+
+  function updateSingleFlag(container) {
+    if (!container) return;
+    var rows = container.querySelectorAll('.shirt-line');
+    if (rows.length <= 1) container.setAttribute('data-single', '');
+    else container.removeAttribute('data-single');
+  }
+
+  function addRow(containerId) {
+    var container = $(containerId);
+    var tpl = ROW_TEMPLATES[containerId];
+    if (!container || !tpl) {
+      console.error('[shirt-order] cannot add row: missing container/template for', containerId);
+      return;
+    }
+    var row = tpl.cloneNode(true);
+    row.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
+    var qty = row.querySelector('.shirt-line__qty input');
+    if (qty) qty.value = '1';
+    container.appendChild(row);
+    updateSingleFlag(container);
+    recalcTotal();
+    var firstField = row.querySelector('select, input');
+    if (firstField) firstField.focus();
+  }
+
+  function removeRow(removeBtn) {
+    var row = removeBtn.closest('.shirt-line');
+    var container = removeBtn.closest('.shirt-lines');
+    if (!row || !container) return;
+    if (container.querySelectorAll('.shirt-line').length <= 1) return; /* keep last row */
+    row.parentNode.removeChild(row);
+    updateSingleFlag(container);
+    recalcTotal();
+  }
 
   function initLineItems() {
-    var containers = document.querySelectorAll('.shirt-lines');
+    var form = $('shirt-order-form');
+    if (!form) { console.error('[shirt-order] order form not found; line items disabled'); return; }
 
-    containers.forEach(function (container) {
-      var addId  = container.getAttribute('data-add-btn');
-      var addBtn = addId ? $(addId) : null;
+    var sections = document.querySelectorAll('.shirt-lines[data-product]');
+    if (!sections.length) console.error('[shirt-order] no product sections found (.shirt-lines[data-product])');
 
-      var firstRow = container.querySelector('.shirt-line');
-      if (!firstRow) return;
-      var template = firstRow.cloneNode(true);
-
-      function resetRow(row) {
-        row.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
-        var qty = row.querySelector('.shirt-line__qty input');
-        if (qty) qty.value = '1';
-        return row;
-      }
-
-      function updateSingleFlag() {
-        var rows = container.querySelectorAll('.shirt-line');
-        if (rows.length <= 1) container.setAttribute('data-single', '');
-        else container.removeAttribute('data-single');
-      }
-
-      function wireRow(row) {
-        var remove = row.querySelector('.shirt-line__remove');
-        if (remove) {
-          remove.addEventListener('click', function () {
-            var rows = container.querySelectorAll('.shirt-line');
-            if (rows.length <= 1) return;
-            row.parentNode.removeChild(row);
-            updateSingleFlag();
-            recalcTotal();
-          });
+    /* Capture a pristine row template per section. Guarded so one bad section
+       cannot abort setup of the rest. */
+    sections.forEach(function (container) {
+      try {
+        var firstRow = container.querySelector('.shirt-line');
+        if (!firstRow) {
+          console.error('[shirt-order] section "' + container.id + '" has no .shirt-line row template');
+          return;
         }
-        row.querySelectorAll('select, input').forEach(function (el) {
-          el.addEventListener('input', recalcTotal);
-          el.addEventListener('change', recalcTotal);
-        });
+        ROW_TEMPLATES[container.id] = firstRow.cloneNode(true);
+        var addId = container.getAttribute('data-add-btn');
+        if (addId) ADD_TO[addId] = container.id;
+        updateSingleFlag(container);
+      } catch (err) {
+        console.error('[shirt-order] failed to initialize section "' +
+          (container && container.id) + '":', err);
       }
+    });
 
-      wireRow(firstRow);
-      updateSingleFlag();
+    /* Delegated field changes → recalc (covers every current and future row). */
+    function onField(e) {
+      if (e.target && e.target.closest && e.target.closest('.shirt-line')) recalcTotal();
+    }
+    form.addEventListener('input', onField);
+    form.addEventListener('change', onField);
 
-      if (addBtn) {
-        addBtn.addEventListener('click', function () {
-          var row = resetRow(template.cloneNode(true));
-          container.appendChild(row);
-          wireRow(row);
-          updateSingleFlag();
-          recalcTotal();
-          var firstField = row.querySelector('select, input');
-          if (firstField) firstField.focus();
-        });
-      }
+    /* Delegated clicks for add-row buttons and per-row remove buttons. */
+    form.addEventListener('click', function (e) {
+      if (!e.target || !e.target.closest) return;
+      var addBtn = e.target.closest('button[id]');
+      if (addBtn && ADD_TO[addBtn.id]) { e.preventDefault(); addRow(ADD_TO[addBtn.id]); return; }
+      var removeBtn = e.target.closest('.shirt-line__remove');
+      if (removeBtn) { e.preventDefault(); removeRow(removeBtn); return; }
     });
   }
 
@@ -489,10 +524,13 @@
   /* ── Bootstrap ─────────────────────────────────────────── */
 
   function init() {
-    initLineItems();
-    initSubmit();
-    renderRounds();
-    loadProducts().then(function () { recalcTotal(); });
+    /* Guard each subsystem: a failure in one must not disable the others. */
+    try { initLineItems(); } catch (e) { console.error('[shirt-order] initLineItems failed:', e); }
+    try { initSubmit(); }    catch (e) { console.error('[shirt-order] initSubmit failed:', e); }
+    try { renderRounds(); }  catch (e) { console.error('[shirt-order] renderRounds failed:', e); }
+    loadProducts().then(function () {
+      try { recalcTotal(); } catch (e) { console.error('[shirt-order] recalcTotal failed:', e); }
+    });
   }
 
   if (document.readyState === 'loading') {
