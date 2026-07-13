@@ -71,6 +71,8 @@
 
   /* Layout */
   --max-width:     1100px;
+  --max-width-app: 1360px; /* wider cap for two-column (sidebar) layouts so the
+                              content column keeps room for wide embeds */
   --content-width: 780px;
   --nav-height:    56px;
 
@@ -1810,7 +1812,12 @@ tr:hover td { background: var(--color-surface-alt); }
 .site-body {
   display: flex;
   align-items: flex-start;
-  max-width: var(--max-width);
+  /* body is a column flex container that does not stretch its children, so
+     without an explicit width .site-body shrink-wraps to its content and the
+     content column collapses (badly cramping wide embeds like the calendar).
+     width:100% makes it fill the available width, clamped by max-width. */
+  width: 100%;
+  max-width: var(--max-width-app);
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-2xl);
   gap: var(--spacing-2xl);
@@ -1838,8 +1845,10 @@ tr:hover td { background: var(--color-surface-alt); }
   width: 216px;
   flex-shrink: 0;
   position: sticky;
-  top: calc(56px + var(--spacing-md));
-  max-height: calc(100vh - 56px - var(--spacing-2xl));
+  /* Sit clearly below the sticky top nav (var(--nav-height)) rather than a
+     hardcoded value, so the sidebar never tucks under it. */
+  top: calc(var(--nav-height) + var(--spacing-md));
+  max-height: calc(100vh - var(--nav-height) - var(--spacing-2xl));
   overflow-y: auto;
   /* Custom scrollbar — subtle */
   scrollbar-width: thin;

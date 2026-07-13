@@ -1,9 +1,9 @@
 {
-  "name": "nwk-shirts-browser-tests",
+  "name": "nwk-browser-tests",
   "private": true,
-  "description": "Real headless-browser tests for the /shirts preorder page. Isolated from the site root on purpose: Netlify builds from the repo root (no package.json there) and must not install puppeteer or download Chromium at deploy time.",
+  "description": "Real headless-browser tests for the site (shirts preorder + member-area layout). Isolated from the site root on purpose: Netlify builds from the repo root (no package.json there) and must not install puppeteer or download Chromium at deploy time.",
   "scripts": {
-    "test": "node shirts-order.browser.test.js"
+    "test": "node shirts-order.browser.test.js && node member-layout.browser.test.js"
   },
   "devDependencies": {
     "puppeteer": "^25.3.0"
