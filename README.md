@@ -1,8 +1,8 @@
 # Northwest Kingdom
 
-Neighborhood information hub for Northwest Kingdom residents within the Miccosukee Land Co-op.
+The personal website of Josh Bechtel, an NWK resident within the Miccosukee Land Co-op.
 
-**Site purpose:** This is a neighborhood-maintained information hub for records, events, projects, documents, and community continuity. It is not the official website of the Miccosukee Land Co-op.
+**Site purpose:** This is a personal project — a place for Josh to learn and experiment with web technology and to share the occasional useful thing with neighbors (like the community shirt preorder). It is not an official Northwest Kingdom or Miccosukee Land Co-op site.
 
 ---
 
@@ -23,13 +23,13 @@ Neighborhood information hub for Northwest Kingdom residents within the Miccosuk
 
 ## Site purpose and framing
 
-Northwest Kingdom is a neighborhood within the Miccosukee Land Co-op (MLC) in Leon County, Florida. This site organizes NWK's own records, events, projects, and institutional knowledge — separate from the MLC's own channels but operating within the MLC framework.
+Northwest Kingdom is a neighborhood within the Miccosukee Land Co-op (MLC) in Leon County, Florida. This site is Josh Bechtel's personal project as an NWK resident — a hands-on way to learn and experiment with web technology, oriented toward his community, and to share the occasional useful thing with neighbors (like the shirt preorder). Some pages gather NWK-related information and the neighborhood newsletter for anyone who finds them handy.
 
 **This site:**
-- Is maintained by Northwest Kingdom residents
-- References MLC documents as the current governance framework for NWK
-- Is structured to grow into a full neighborhood records and continuity system
-- Is not the MLC's official website and does not speak for the MLC as a whole
+- Is a personal project of Josh Bechtel, an NWK resident, built to learn and experiment
+- References MLC documents only for convenience, as the current framework NWK operates within
+- Occasionally shares practical things with neighbors (e.g., the community shirt preorder)
+- Is not an official Northwest Kingdom or MLC site and does not speak for the MLC as a whole
 
 ---
 
@@ -294,4 +294,4 @@ Any static host that can serve from a directory root will work: Netlify, Vercel,
 
 ---
 
-*This site is maintained by Northwest Kingdom residents. Questions about the site: contact the Technical Administrator.*
+*This is a personal project by Josh Bechtel, an NWK resident. Questions about the site: see the contact page.*

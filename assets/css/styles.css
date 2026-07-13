@@ -2500,6 +2500,10 @@ tr:hover td { background: var(--color-surface-alt); }
   color: var(--color-text-muted);
   margin: 0 0 var(--spacing-sm);
 }
+.invoice__seller {
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xs);
+}
 .invoice__table {
   width: 100%;
   border-collapse: collapse;

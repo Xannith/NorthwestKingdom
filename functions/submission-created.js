@@ -25,7 +25,7 @@ var products = require('../data/products.json');
    without a code change (e.g. back to josh@joshuabechtel.com later). */
 var SELLER_EMAIL = process.env.SELLER_NOTIFY_EMAIL || 'kal75el@gmail.com';
 /* Override in Netlify env once the sending domain is verified with the provider. */
-var FROM = process.env.INVOICE_FROM_EMAIL || 'Northwest Kingdom <orders@northwestkingdom.com>';
+var FROM = process.env.INVOICE_FROM_EMAIL || 'NWK Shirt Preorder (Josh and Kim) <orders@northwestkingdom.com>';
 var CAMPAIGN = products.campaign || 'I Gave';
 
 /* ── Helpers ─────────────────────────────────────────────── */
@@ -130,7 +130,8 @@ function renderInvoice(ctx) {
 
   /* ---- Plain-text fallback ---- */
   var textLines = [];
-  textLines.push('NORTHWEST KINGDOM — "' + CAMPAIGN + '" preorder');
+  textLines.push('"' + CAMPAIGN + '" shirt preorder');
+  textLines.push('Sold by Kim Reimer and Josh Bechtel');
   textLines.push('Order ' + ctx.orderId + '   ' + orderDateStr());
   textLines.push('');
   textLines.push('Purchaser: ' + ctx.name + (ctx.email ? ' <' + ctx.email + '>' : ''));
@@ -166,8 +167,8 @@ function renderInvoice(ctx) {
   var html =
   '<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#222;">' +
     '<div style="background:#1d3d1a;color:#fff;padding:18px 20px;border-radius:8px 8px 0 0;">' +
-      '<div style="font-size:18px;font-weight:bold;">Northwest Kingdom</div>' +
-      '<div style="font-size:13px;opacity:0.85;">&ldquo;' + escapeHtml(CAMPAIGN) + '&rdquo; community preorder</div>' +
+      '<div style="font-size:18px;font-weight:bold;">&ldquo;' + escapeHtml(CAMPAIGN) + '&rdquo; Shirt Preorder</div>' +
+      '<div style="font-size:13px;opacity:0.85;">Sold by Kim Reimer and Josh Bechtel</div>' +
     '</div>' +
     '<div style="border:1px solid #e2e2e2;border-top:none;border-radius:0 0 8px 8px;padding:20px;">' +
       '<p style="margin:0 0 4px;font-size:13px;color:#777;">Order ' + escapeHtml(ctx.orderId) +

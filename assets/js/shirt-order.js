@@ -266,6 +266,7 @@
 
     return '' +
       '<div class="invoice">' +
+        '<p class="invoice__seller">Sold by Kim Reimer and Josh Bechtel</p>' +
         (meta && meta.orderId ? '<p class="invoice__meta">Order ' + escapeHtml(meta.orderId) + '</p>' : '') +
         '<table class="invoice__table">' +
           '<thead><tr><th>Item</th><th class="invoice__num">Qty</th><th class="invoice__num">Unit</th><th class="invoice__num">Total</th></tr></thead>' +
