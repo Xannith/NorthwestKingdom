@@ -87,7 +87,8 @@ shows a short "status is being updated" message instead of the rounds.
 Two images are shown on the page:
 
 - `img/i-gave-shirt-demo1.jpg` — the shirt mockup photo (the big hero image).
-- `img/i_gave_2026_v7_3x_transparent.png` — the design artwork (transparent).
+- `img/i_gave_2026_v8.png` — the design artwork (the corrected badge; the older
+  `i_gave_2026_v7_3x_transparent.png` is retired but kept in `img/`).
 
 To replace one, upload a new file with the **exact same name** to the `img/`
 folder (on GitHub: open the `img` folder, click **Add file → Upload files**,
