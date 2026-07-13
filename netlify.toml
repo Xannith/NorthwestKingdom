@@ -71,6 +71,22 @@
 # Rules are evaluated in order. The first matching rule wins.
 # Netlify Identity must be enabled in the dashboard for these to take effect.
 
+# Calendar moved to the public area. These exact-path rules must come BEFORE the
+# /member/* gating below so the old member-calendar URL reaches the public page
+# without a login. Only the calendar index moves; other /member/calendar/* pages
+# stay gated by the rules further down.
+[[redirects]]
+  from = "/member/calendar/"
+  to   = "/public/calendar/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/member/calendar/index.html"
+  to   = "/public/calendar/"
+  status = 301
+  force = true
+
 # Member area: members and admins may enter; everyone else goes to login.
 [[redirects]]
   from = "/member/*"

@@ -61,7 +61,10 @@ async function measure(page, url, width) {
   page.on('request', (req) => { if (req.url().includes('base44.app')) req.abort(); else req.continue(); });
 
   try {
-    for (const url of ['/member/dashboard/', '/member/calendar/']) {
+    /* /member/dashboard/ = member area (cards); /public/calendar/ = the wide
+       Base44 embed page that exposed the collapse. Both use the .site-body
+       two-column layout. (/member/calendar/ was retired into the public area.) */
+    for (const url of ['/member/dashboard/', '/public/calendar/']) {
       for (const width of [1440, 1024]) {
         const d = await measure(page, `http://localhost:${port}${url}`, width);
         const label = `${url} @ ${width}px`;
