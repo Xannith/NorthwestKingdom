@@ -254,11 +254,11 @@ exports.handler = async function (event) {
 
   var to = isEmail(email) ? [email] : [SELLER_EMAIL];
   var bcc = isEmail(email) ? [SELLER_EMAIL] : undefined;
-  var subject = 'Your "' + CAMPAIGN + '" order — ' + orderId + ' (' + core.money(totals.amountDue) + ')';
+  var subject = 'Your "' + CAMPAIGN + '" order, ' + orderId + ' (' + core.money(totals.amountDue) + ')';
 
   var apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.log('[submission-created] DRY RUN — RESEND_API_KEY not set. No email sent.');
+    console.log('[submission-created] DRY RUN: RESEND_API_KEY not set. No email sent.');
     console.log('[submission-created] Order ' + orderId + ' | to: ' + to.join(', ') +
       (bcc ? ' | bcc: ' + bcc.join(', ') : '') + ' | amount due: ' + core.money(totals.amountDue));
     console.log('[submission-created] Invoice (text):\n' + invoice.text);

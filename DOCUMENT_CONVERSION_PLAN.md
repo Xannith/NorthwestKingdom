@@ -1,4 +1,4 @@
-# Document Conversion Plan — Northwest Kingdom
+# Document Conversion Plan - Northwest Kingdom
 
 This document explains how to add PDFs and searchable HTML versions of documents to the NWK site.
 Follow this plan to ensure documents land in the right place, with the right access level, and are not accidentally exposed publicly.
@@ -30,7 +30,7 @@ These three documents are publicly accessible and already have PDF and HTML vers
 | Bylaws | `/governance/pdf/ByLaws.pdf` | `/governance/bylaws.html` | HTML Available (OCR) |
 
 **Next steps for public documents:**
-- Proofread HTML versions (OCR — may contain errors)
+- Proofread HTML versions (OCR, may contain errors)
 - Update status from "Needs Review" to "Available" on document pages after proofreading
 - Update "Last reviewed" date on document cards
 
@@ -97,9 +97,9 @@ For scanned PDFs (most historical documents):
 
 1. Use an OCR tool: Adobe Acrobat, Tesseract, or an online OCR service
 2. Export to plain text or HTML
-3. Clean up the output — OCR often introduces errors, especially with older scans
+3. Clean up the output: OCR often introduces errors, especially with older scans
 4. Format as a clean HTML document following the site's page template
-5. Add the OCR caveat notice: "This is an OCR conversion — proofread before relying on specific wording."
+5. Add the OCR caveat notice: "This is an OCR conversion, proofread before relying on specific wording."
 6. Link to both the HTML version and the original PDF from the document page
 7. Set status to `Needs Review`
 8. After proofreading, update status to `HTML Available` or `Available`
@@ -135,12 +135,12 @@ Notes:
 
 ## How to keep public and member indexes separate
 
-**Public search index** — Must only include:
+**Public search index**: Must only include:
 - The three core public documents
 - Public pages (About NWK, Contact, FAQ, homepage)
 - Do NOT include member documents, council business, Alternate Current, or internal records
 
-**Member search index** — Will eventually include:
+**Member search index**: Will eventually include:
 - Council business archive
 - Alternate Current archive
 - Member governance documents
@@ -166,9 +166,9 @@ Notes:
 
 Priority order for document work:
 
-1. **Proofread the three public HTML documents** (Articles, C&R, Bylaws) — they are OCR conversions with potential errors
-2. **Gather Alternate Current issues** — start with recent years, work backward
-3. **Gather TC agendas and minutes** — start with recent years
+1. **Proofread the three public HTML documents** (Articles, C&R, Bylaws): they are OCR conversions with potential errors
+2. **Gather Alternate Current issues**: start with recent years, work backward
+3. **Gather TC agendas and minutes**, start with recent years
 4. **Set up authentication** before uploading any member-only materials to the live site
 5. **Upload member materials** only after authentication is in place
 6. **Build member search index** after materials are uploaded and HTML versions are ready

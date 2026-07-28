@@ -1,13 +1,13 @@
 # Updating the Community Shirts page
 
 This explains how to update the **"I Gave" Community Shirts** page at
-`northwestkingdom.com/shirts/` — specifically the **Order Status** section that
+`northwestkingdom.com/shirts/`, specifically the **Order Status** section that
 shows where each bulk ordering round stands. No coding required.
 
 There are two things you might update:
 
-1. **The order round status** (most common) — editing one small text file.
-2. **The shirt photo / artwork** (rare) — replacing two image files.
+1. **The order round status** (most common), editing one small text file.
+2. **The shirt photo / artwork** (rare), replacing two image files.
 
 ---
 
@@ -46,18 +46,18 @@ You can edit it two ways:
 
 ### The fields you can change
 
-- **`cutoffDate`** — the commitment cutoff for that round, in `YYYY-MM-DD`
+- **`cutoffDate`**: the commitment cutoff for that round, in `YYYY-MM-DD`
   format (year-month-day). Example: `"2026-08-17"`.
-- **`status`** — one of the words below. This controls the label and color of
+- **`status`**: one of the words below. This controls the label and color of
   the round on the page.
-- **`detail`** — an optional short note shown under the round (for example,
+- **`detail`**: an optional short note shown under the round (for example,
   `"Shirts expected the week of Sept 15"`). Leave it as `""` for none.
-- **`invoices`** — the list of invoice numbers included in that round, shown as
+- **`invoices`**: the list of invoice numbers included in that round, shown as
   small grey text at the bottom of the round. Invoice numbers **only**: never
   add names, dollar amounts, or item counts here. Leave it as `[]` for none.
   To update a round, replace the whole list (see below).
-- **`note`** — the sentence shown at the top of the Order Status section.
-- **`campaign`** — the campaign name shown as a small heading.
+- **`note`**: the sentence shown at the top of the Order Status section.
+- **`campaign`**: the campaign name shown as a small heading.
 
 ### Allowed `status` values
 
@@ -65,7 +65,7 @@ Use one of these exact words (all lowercase):
 
 | status        | What it means / how it shows on the page                    |
 |---------------|-------------------------------------------------------------|
-| `upcoming`    | Not open yet — a future round.                              |
+| `upcoming`    | Not open yet, a future round.                              |
 | `collecting`  | **The active round.** Highlighted. Commitments are open.    |
 | `ordered`     | Submitted to the print vendor.                              |
 | `shipped`     | Vendor has shipped the batch.                               |
@@ -101,7 +101,7 @@ names, dollar amounts, or item counts: this is a public page.
 - If something looks broken after you save, you can paste the file into a free
   "JSON validator" website to find the typo, or compare it to the example above.
 
-If the file has an error, the page still loads — the Order Status section just
+If the file has an error, the page still loads, the Order Status section just
 shows a short "status is being updated" message instead of the rounds.
 
 ---
@@ -110,8 +110,8 @@ shows a short "status is being updated" message instead of the rounds.
 
 Two images are shown on the page:
 
-- `img/i-gave-shirt-demo1.jpg` — the shirt mockup photo (the big hero image).
-- `img/i_gave_2026_v8.png` — the design artwork (the corrected badge; the older
+- `img/i-gave-shirt-demo1.jpg` - the shirt mockup photo (the big hero image).
+- `img/i_gave_2026_v8.png` - the design artwork (the corrected badge; the older
   `i_gave_2026_v7_3x_transparent.png` is retired but kept in `img/`).
 
 To replace one, upload a new file with the **exact same name** to the `img/`
@@ -124,4 +124,4 @@ artwork as a transparent `.png`.
 ## Who to contact
 
 If you get stuck, contact the site maintainer before force-saving a broken
-file — a bad `.json` file is the only thing that can visibly affect the page.
+file: a bad `.json` file is the only thing that can visibly affect the page.

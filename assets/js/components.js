@@ -118,7 +118,7 @@
 
   var LEFT_NO_ROLE = [
     { label: 'Your Account', items: [
-      { href: '/access-denied/', label: 'Access info — no role assigned' },
+      { href: '/access-denied/', label: 'Access info: no role assigned' },
       { href: '#', label: 'Log Out', logout: true },
     ]},
   ].concat(LEFT_PUBLIC);
@@ -506,7 +506,7 @@
 
   function pollForIdentity() {
     if (window.netlifyIdentity) {
-      log('widget already present — calling onWidgetReady immediately');
+      log('widget already present: calling onWidgetReady immediately');
       onWidgetReady();
       return;
     }
@@ -514,7 +514,7 @@
     var poll = setInterval(function () {
       if (window.netlifyIdentity) {
         clearInterval(poll);
-        log('widget detected after ~' + (tries * 50) + 'ms — calling onWidgetReady');
+        log('widget detected after ~' + (tries * 50) + 'ms, calling onWidgetReady');
         onWidgetReady();
       } else if (++tries >= 100) {
         clearInterval(poll);

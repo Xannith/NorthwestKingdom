@@ -1,4 +1,4 @@
-# NWK Photo Uploads — Implementation Notes
+# NWK Photo Uploads - Implementation Notes
 
 ## Current state (static site)
 
@@ -61,7 +61,7 @@ Add entries to `data/photo-submissions.json` under the `"photos"` array:
 }
 ```
 
-**IMPORTANT — privacy rules:**
+**IMPORTANT - privacy rules:**
 - Do NOT include `contactEmail` in this file (it is private and captured in Netlify Forms only)
 - Do NOT include `submitterEmail` or any private contact data
 - Set `status: "pending-review"` for any submission with `identifiablePeople: true`

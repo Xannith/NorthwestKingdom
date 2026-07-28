@@ -2,7 +2,7 @@
 
 The personal website of Josh Bechtel, an NWK resident within the Miccosukee Land Co-op.
 
-**Site purpose:** This is a personal project — a place for Josh to learn and experiment with web technology and to share the occasional useful thing with neighbors (like the community shirt preorder). It is not an official Northwest Kingdom or Miccosukee Land Co-op site.
+**Site purpose:** This is a personal project, a place for Josh to learn and experiment with web technology and to share the occasional useful thing with neighbors (like the community shirt preorder). It is not an official Northwest Kingdom or Miccosukee Land Co-op site.
 
 ---
 
@@ -23,7 +23,7 @@ The personal website of Josh Bechtel, an NWK resident within the Miccosukee Land
 
 ## Site purpose and framing
 
-Northwest Kingdom is a neighborhood within the Miccosukee Land Co-op (MLC) in Leon County, Florida. This site is Josh Bechtel's personal project as an NWK resident — a hands-on way to learn and experiment with web technology, oriented toward his community, and to share the occasional useful thing with neighbors (like the shirt preorder). Some pages gather NWK-related information and the neighborhood newsletter for anyone who finds them handy.
+Northwest Kingdom is a neighborhood within the Miccosukee Land Co-op (MLC) in Leon County, Florida. This site is Josh Bechtel's personal project as an NWK resident, a hands-on way to learn and experiment with web technology, oriented toward his community, and to share the occasional useful thing with neighbors (like the shirt preorder). Some pages gather NWK-related information and the neighborhood newsletter for anyone who finds them handy.
 
 **This site:**
 - Is a personal project of Josh Bechtel, an NWK resident, built to learn and experiment
@@ -229,9 +229,9 @@ These are proposed roles. They are not official policy until the neighborhood fo
 2. **Create the HTML file** at the correct path. Use an existing page as a template.
 3. **Key elements every page needs:**
    - `data-section="public|member|admin"` on the `<body>` tag
-   - `<div id="site-header"></div>` — loaded by components.js
-   - `<nav id="site-nav" ...></nav>` — loaded by components.js
-   - `<div id="site-footer" ...></div>` — loaded by components.js
+   - `<div id="site-header"></div>` - loaded by components.js
+   - `<nav id="site-nav" ...></nav>` - loaded by components.js
+   - `<div id="site-footer" ...></div>` - loaded by components.js
    - `<script src="/assets/js/components.js"></script>` before `</body>`
    - Breadcrumb navigation
    - Auth gate notice (for member/admin pages)
@@ -249,7 +249,7 @@ python3 tools/generate-pages.py
 
 ## How to run locally
 
-The site uses `fetch()` to load shared header/nav/footer components. This requires a web server — it will not work by simply opening HTML files directly in a browser (`file://` protocol).
+The site uses `fetch()` to load shared header/nav/footer components. This requires a web server, it will not work by simply opening HTML files directly in a browser (`file://` protocol).
 
 **Option 1: Python (built-in, no install needed)**
 ```bash

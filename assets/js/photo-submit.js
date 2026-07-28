@@ -77,7 +77,7 @@
     /* Check size */
     if (file.size > MAX_BYTES) {
       return 'This file is ' + formatBytes(file.size) +
-             ' — the maximum is 8 MB. Please reduce the file size and try again.';
+             ': the maximum is 8 MB. Please reduce the file size and try again.';
     }
 
     if (file.size === 0) return 'The selected file appears to be empty.';

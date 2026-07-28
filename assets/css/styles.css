@@ -1,8 +1,8 @@
 /* ============================================================
-   Northwest Kingdom — styles.css
+   Northwest Kingdom: styles.css
    Single source of truth for all site styling.
    To change the seasonal or holiday theme, edit the CSS custom
-   properties in the :root block below — colors, fonts, and
+   properties in the:root block below: colors, fonts, and
    spacing all live there. No other file needs to change.
    ============================================================ */
 
@@ -24,13 +24,13 @@
   --color-text-muted:   #6b6158;
   --color-text-light:   #9a9188;
 
-  /* Primary brand color — header, nav, buttons, links */
+  /* Primary brand color: header, nav, buttons, links */
   --color-primary:      #2e5c28;   /* forest green */
   --color-primary-dark: #1d3d1a;   /* nav bar, header bar */
   --color-primary-light:#4a7c42;
   --color-primary-bg:   #eaf2e8;   /* tinted highlight areas */
 
-  /* Accent — secondary highlights, footer details */
+  /* Accent: secondary highlights, footer details */
   --color-accent:       #7a6548;   /* earthy brown */
   --color-accent-light: #a08a6a;
   --color-accent-bg:    #f5efe6;
@@ -1850,7 +1850,7 @@ tr:hover td { background: var(--color-surface-alt); }
   top: calc(var(--nav-height) + var(--spacing-md));
   max-height: calc(100vh - var(--nav-height) - var(--spacing-2xl));
   overflow-y: auto;
-  /* Custom scrollbar — subtle */
+  /* Custom scrollbar: subtle */
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
 }
@@ -1980,7 +1980,7 @@ tr:hover td { background: var(--color-surface-alt); }
   padding-left: var(--spacing-md);
 }
 
-/* Mobile toggle for left nav — hidden on desktop */
+/* Mobile toggle for left nav, hidden on desktop */
 .left-nav__mobile-toggle {
   display: none;
   width: 100%;
@@ -2002,7 +2002,7 @@ tr:hover td { background: var(--color-surface-alt); }
   background: var(--color-surface-alt);
 }
 
-/* Left nav sections — always visible on desktop */
+/* Left nav sections: always visible on desktop */
 .left-nav__sections {
   display: block;
 }

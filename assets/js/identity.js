@@ -83,7 +83,7 @@
         if (window.location.pathname.indexOf('/login') === 0) {
           var btn = document.getElementById('login-open-btn');
           if (btn) {
-            btn.textContent = 'Login widget could not load — try refreshing.';
+            btn.textContent = 'Login widget could not load, try refreshing.';
             btn.disabled = true;
           }
         }

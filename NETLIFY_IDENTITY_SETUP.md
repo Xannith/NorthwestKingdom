@@ -1,4 +1,4 @@
-# Netlify Identity Setup — Northwest Kingdom
+# Netlify Identity Setup - Northwest Kingdom
 
 This document covers the complete setup, role assignment, and troubleshooting process
 for Netlify Identity on NorthwestKingdom.com.
@@ -7,18 +7,18 @@ for Netlify Identity on NorthwestKingdom.com.
 
 ## One-time dashboard setup
 
-### Step 1 — Enable Identity
+### Step 1 - Enable Identity
 
 1. Netlify dashboard → Your site → **Site configuration** → **Identity**
 2. Click **Enable Identity**
 
-### Step 2 — Set registration to invite-only
+### Step 2 - Set registration to invite-only
 
 1. Identity → **Registration preferences**
 2. Set to **Invite only**
    This prevents anyone from self-registering. Accounts are created by invitation only.
 
-### Step 3 — Configure the invite confirmation URL
+### Step 3 - Configure the invite confirmation URL
 
 By default, Netlify sends invite links to the site root (`https://northwestkingdom.com/#invite_token=...`).
 The site handles tokens on the homepage, but for a better user experience, configure invites to go
@@ -45,7 +45,7 @@ Without a role, they cannot access `/member/*` or `/admin/*`.
 
 ---
 
-## Assigning roles — CRITICAL
+## Assigning roles - CRITICAL
 
 ### Important distinction
 
@@ -54,10 +54,10 @@ Netlify Identity has two separate metadata fields:
 | Field | Who can edit | Used for access control? |
 |---|---|---|
 | **User metadata** | The user themselves | **No** |
-| **App metadata** | Admins only | **Yes — this is what netlify.toml checks** |
+| **App metadata** | Admins only | **Yes, this is what netlify.toml checks** |
 
 The `netlify.toml` redirect conditions (`conditions = {Role = ["member", "admin"]}`)
-check **`app_metadata.roles`** — not `user_metadata`.
+check **`app_metadata.roles`**, not `user_metadata`.
 
 **Setting a role in "User metadata" has no effect on access control.**
 
@@ -162,9 +162,9 @@ For a user with only the `member` role:
 ### Modal does not open automatically
 
 1. Open browser console on `/login/`
-2. Check: `typeof netlifyIdentity` — should be `"object"`
+2. Check: `typeof netlifyIdentity`, should be `"object"`
 3. If undefined: widget did not load (see "Verifying the widget loads" above)
-4. If object: type `netlifyIdentity.open('login')` — if modal opens, the issue is the auto-open
+4. If object: type `netlifyIdentity.open('login')`: if modal opens, the issue is the auto-open
 5. Check console for JavaScript errors from `identity.js`
 
 ### Invite link redirects to homepage and no modal appears
@@ -186,7 +186,7 @@ Fix: Assign the correct role in App metadata (see role assignment above).
 1. Confirm Identity is **enabled** in the dashboard
 2. Confirm the deploy includes the latest `netlify.toml`
 3. Confirm the redirect rules are in the deployed `netlify.toml` (check Deploys → latest deploy)
-4. Note: role-based redirects only work on the **deployed Netlify site** — they do not work locally
+4. Note: role-based redirects only work on the **deployed Netlify site**, they do not work locally
 5. Check the deploy logs for any `netlify.toml` parse errors
 
 ### User can log in but lands on homepage instead of dashboard

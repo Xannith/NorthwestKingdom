@@ -1,14 +1,14 @@
-# Navigation Auth State — Northwest Kingdom
+# Navigation Auth State - Northwest Kingdom
 
 ---
 
 ## Why nav wasn't persisting across pages (root cause)
 
-The identity widget was loaded **asynchronously** on pages that didn't have it in `<head>`. The widget fires its `init` event immediately upon initialization (reading the user from localStorage — no network call needed for a valid token). The previous implementation registered `on('init', ...)` via a 50ms polling loop. By the time the poll tick ran and registered the handler, `init` had already fired. The handler was registered but never called. The nav stayed public forever on page navigation.
+The identity widget was loaded **asynchronously** on pages that didn't have it in `<head>`. The widget fires its `init` event immediately upon initialization (reading the user from localStorage, no network call needed for a valid token). The previous implementation registered `on('init', ...)` via a 50ms polling loop. By the time the poll tick ran and registered the handler, `init` had already fired. The handler was registered but never called. The nav stayed public forever on page navigation.
 
-**The fix:** When the widget is detected (via polling OR immediately), call `netlifyIdentity.currentUser()` right away and render the nav based on that result — without waiting for the `init` event. `currentUser()` returns the same user that `init` would have provided, because `init` already completed and set the internal state. The `on('init', ...)` handler still runs as a verification pass in case the token was expired.
+**The fix:** When the widget is detected (via polling OR immediately), call `netlifyIdentity.currentUser()` right away and render the nav based on that result, without waiting for the `init` event. `currentUser()` returns the same user that `init` would have provided, because `init` already completed and set the internal state. The `on('init', ...)` handler still runs as a verification pass in case the token was expired.
 
-**Secondary fix:** Nav is now rendered from **inline JavaScript data arrays**, not fetched HTML fragments. `updateNav()` is fully synchronous — no async fetch, no timing races, no ordering dependencies.
+**Secondary fix:** Nav is now rendered from **inline JavaScript data arrays**, not fetched HTML fragments. `updateNav()` is fully synchronous, no async fetch, no timing races, no ordering dependencies.
 
 ---
 
@@ -32,7 +32,7 @@ The identity widget was loaded **asynchronously** on pages that didn't have it i
 
 On the **homepage** and **login page**, the identity widget is in `<head>` as a blocking script. Step 7 happens immediately (no polling needed). `currentUser()` is available right away.
 
-On **all other pages**, the widget is loaded dynamically (step 6). The poll detects it typically within 50–300ms. There is a brief flash of public nav (steps 3→8c) but the final state is always correct.
+On **all other pages**, the widget is loaded dynamically (step 6). The poll detects it typically within 50 to 300ms. There is a brief flash of public nav (steps 3→8c) but the final state is always correct.
 
 ---
 
@@ -130,22 +130,22 @@ localStorage.removeItem('nwk_debug')     // to disable
 
 ### Nav stays public after login
 
-1. `NWK.updateNav(netlifyIdentity.currentUser())` in console — does nav change?
-2. If yes: timing issue — the init event may have fired and corrected. Try page refresh.
-3. If no: check `netlifyIdentity.currentUser()?.app_metadata?.roles` — is the role set correctly?
+1. `NWK.updateNav(netlifyIdentity.currentUser())` in console: does nav change?
+2. If yes: timing issue, the init event may have fired and corrected. Try page refresh.
+3. If no: check `netlifyIdentity.currentUser()?.app_metadata?.roles`, is the role set correctly?
 4. Role must be in **App metadata** (not User metadata).
 5. User must log out and back in after role assignment.
 
 ### Left nav does not appear
 
-1. `document.getElementById('site-left-nav')` — is it null?
+1. `document.getElementById('site-left-nav')`: is it null?
 2. If null: does the page have `data-no-sidenav="true"`? That suppresses injection.
-3. `document.getElementById('main-content')` — must exist for injection.
+3. `document.getElementById('main-content')`: must exist for injection.
 4. Enable debug: `localStorage.setItem('nwk_debug','1')` then refresh. Check console.
 
 ### Login works but nav briefly shows public then switches
 
-This is expected on pages without the identity widget in `<head>`. The widget takes ~50–300ms to load. During that time, the public nav is shown as the default. Once the widget is ready, `currentUser()` is called and the nav updates. The flash is brief.
+This is expected on pages without the identity widget in `<head>`. The widget takes ~50 to 300ms to load. During that time, the public nav is shown as the default. Once the widget is ready, `currentUser()` is called and the nav updates. The flash is brief.
 
 To eliminate the flash on a specific page, add the identity widget to its `<head>`:
 ```html

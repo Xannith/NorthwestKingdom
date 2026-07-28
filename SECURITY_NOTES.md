@@ -1,4 +1,4 @@
-# Security Notes — Northwest Kingdom Site
+# Security Notes - Northwest Kingdom Site
 
 **Authentication status: Not yet implemented.**
 
@@ -10,46 +10,46 @@ This document describes the access model, known limitations, and requirements th
 
 The following content is designed for public access:
 
-- `/` — Homepage
-- `/public-documents/` — Public Documents landing page
-- `/public/mlc-reference/governing-documents/articles-of-incorporation.html` — Articles of Incorporation (reference)
-- `/public/mlc-reference/governing-documents/covenants-and-restrictions.html` — Covenants and Restrictions (reference)
-- `/public/mlc-reference/governing-documents/bylaws.html` — Bylaws (reference)
-- `/governance/articles-of-incorporation.html` — HTML version (OCR)
-- `/governance/covenants-and-restrictions.html` — HTML version (OCR)
-- `/governance/bylaws.html` — HTML version (OCR)
-- `/governance/pdf/` — PDFs of the three core documents
-- `/public/about-nwk.html` — About NWK
-- `/public/contact.html` — Contact
-- `/public/faq.html` — FAQ
-- `/login/` — Login forms (the forms themselves, not submitted data)
+- `/` - Homepage
+- `/public-documents/` - Public Documents landing page
+- `/public/mlc-reference/governing-documents/articles-of-incorporation.html` - Articles of Incorporation (reference)
+- `/public/mlc-reference/governing-documents/covenants-and-restrictions.html` - Covenants and Restrictions (reference)
+- `/public/mlc-reference/governing-documents/bylaws.html` - Bylaws (reference)
+- `/governance/articles-of-incorporation.html` - HTML version (OCR)
+- `/governance/covenants-and-restrictions.html` - HTML version (OCR)
+- `/governance/bylaws.html` - HTML version (OCR)
+- `/governance/pdf/` - PDFs of the three core documents
+- `/public/about-nwk.html` - About NWK
+- `/public/contact.html` - Contact
+- `/public/faq.html` - FAQ
+- `/login/` - Login forms (the forms themselves, not submitted data)
 - `CNAME`, `README.md`, and other repo metadata
 
 **Only the three core documents (Articles of Incorporation, Covenants and Restrictions, Bylaws) are intentionally public by default.** All other MLC documents, policies, and records are member-only or admin-only unless specifically approved for public access.
 
 ---
 
-## Member and admin areas — current state
+## Member and admin areas - current state
 
 All `/member/` and `/admin/` pages are **scaffolds** with no real data. They display an explicit `auth-gate` notice that authentication is not yet implemented.
 
 **Critical requirements before any real member data is added:**
 
-1. **Real authentication** — Do not add private member data, contact information, household records, governance working documents, or internal records until a real authentication provider is in place (e.g., Netlify Identity, Supabase Auth, Firebase Authentication, or Auth0).
+1. **Real authentication**: Do not add private member data, contact information, household records, governance working documents, or internal records until a real authentication provider is in place (e.g., Netlify Identity, Supabase Auth, Firebase Authentication, or Auth0).
 
-2. **Server-side access control** — Static HTML files cannot enforce access control on their own. A serverless function, edge middleware, or backend must intercept requests to `/member/` and `/admin/` paths before real data is added.
+2. **Server-side access control**: Static HTML files cannot enforce access control on their own. A serverless function, edge middleware, or backend must intercept requests to `/member/` and `/admin/` paths before real data is added.
 
-3. **No private files in public static folders** — Do not upload private PDFs, contact lists, household data, or restricted documents to any publicly accessible path. Private materials belong in a protected storage location only accessible through authenticated requests.
+3. **No private files in public static folders**: Do not upload private PDFs, contact lists, household data, or restricted documents to any publicly accessible path. Private materials belong in a protected storage location only accessible through authenticated requests.
 
-4. **Separate search indexes** — The public search index must not include member or admin content. The member search index must require authentication to query. These must be built and maintained as separate indexes.
+4. **Separate search indexes**: The public search index must not include member or admin content. The member search index must require authentication to query. These must be built and maintained as separate indexes.
 
-5. **No secrets in client-side code** — API keys, tokens, and credentials must never appear in HTML, JavaScript, or any file committed to the repository. Use environment variables (e.g., Netlify environment variables) for secrets.
+5. **No secrets in client-side code**: API keys, tokens, and credentials must never appear in HTML, JavaScript, or any file committed to the repository. Use environment variables (e.g., Netlify environment variables) for secrets.
 
 ---
 
 ## Navigation security model
 
-The navigation system uses `data-section="public|member|admin"` on `<body>` to load the appropriate nav component. This is a **display-only** separation — it does not enforce access control.
+The navigation system uses `data-section="public|member|admin"` on `<body>` to load the appropriate nav component. This is a **display-only** separation, it does not enforce access control.
 
 - Anyone who knows a URL can access any page in the current scaffold.
 - The `auth-gate` notice on member and admin pages is informational only.
@@ -63,7 +63,7 @@ The navigation system uses `data-section="public|member|admin"` on `<body>` to l
 - Public information pages (About NWK, Contact, FAQ)
 - Login form scaffolds
 - Navigation and layout scaffolding
-- Photo submission form (Netlify Forms — submissions go to Netlify dashboard only)
+- Photo submission form (Netlify Forms, submissions go to Netlify dashboard only)
 
 ---
 
@@ -80,10 +80,10 @@ The navigation system uses `data-section="public|member|admin"` on `<body>` to l
 
 ## Recommended authentication providers
 
-- **Netlify Identity** — Works well with static sites on Netlify. Supports role-based redirect rules.
-- **Supabase Auth** — Open source, PostgreSQL backend, generous free tier.
-- **Firebase Authentication** — Google-managed, 5GB storage free tier.
-- **Auth0** — Flexible, well-documented, has a free tier.
+- **Netlify Identity**: Works well with static sites on Netlify. Supports role-based redirect rules.
+- **Supabase Auth**: Open source, PostgreSQL backend, generous free tier.
+- **Firebase Authentication**: Google-managed, 5GB storage free tier.
+- **Auth0**: Flexible, well-documented, has a free tier.
 
 ---
 

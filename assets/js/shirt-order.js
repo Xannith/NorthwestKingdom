@@ -51,10 +51,10 @@
       .catch(function (err) {
         /* Leave the static default totals in place; submit still works and the
            server re-derives the order authoritatively from products.json.
-           Log loudly — a silent failure here looks like "only the $18 shirt
+           Log loudly: a silent failure here looks like "only the $18 shirt
            counts", since the live total can no longer recompute. */
         PRODUCTS_DATA = null;
-        console.error('[shirt-order] Could not load /data/products.json — live ' +
+        console.error('[shirt-order] Could not load /data/products.json, live ' +
           'order totals are disabled until reload (submissions still work; the ' +
           'server re-prices the order).', err);
       });
@@ -185,7 +185,7 @@
 
   function recalcTotal() {
     var order = currentOrder();
-    if (!order) return null;   // products not loaded yet — keep static defaults
+    if (!order) return null;   // products not loaded yet, keep static defaults
 
     var linesEl = $('order-total-lines');
     if (linesEl) {
@@ -409,7 +409,7 @@
           if (resultBox) {
             resultBox.className = 'submit-result submit-result--error is-visible';
             resultBox.innerHTML =
-              '<p class="submit-result__title">Sorry — that didn’t go through.</p>' +
+              '<p class="submit-result__title">Sorry: that didn’t go through.</p>' +
               '<p>Your order was not submitted. Please check your connection and try ' +
               'again. Your entries have been kept below.</p>';
             resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -446,7 +446,7 @@
     box.className = 'submit-result submit-result--success is-visible';
     box.innerHTML =
       '<p class="submit-result__title">Thank you, ' + escapeHtml(name) + '! Your commitment is in.</p>' +
-      '<p>Here’s your order summary — we’ve also emailed it to you:</p>' +
+      '<p>Here’s your order summary: we’ve also emailed it to you:</p>' +
       invoice +
       '<p class="mb-0">Orders are placed in bulk rounds roughly every 3 weeks. ' +
       'We’ll contact you when the next round is placed so you can arrange payment ' +
