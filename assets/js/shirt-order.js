@@ -468,7 +468,7 @@
     'collecting':  'Collecting now',
     'ordered':     'Ordered',
     'shipped':     'Shipped',
-    'arrived':     'Arrived — ready for pickup',
+    'arrived':     'Arrived - ready for pickup',
     'distributed': 'Distributed'
   };
 
@@ -506,6 +506,16 @@
           var cls    = STATUS_LABELS[status] ? status : 'upcoming';
           var detail = r.detail
             ? '<p class="round-card__detail">' + escapeHtml(r.detail) + '</p>' : '';
+          /* Invoice numbers only — swapped wholesale by replacing the round's
+             "invoices" array in shirt-order-rounds.json. Never any names,
+             amounts, or item counts. */
+          var invoices = (Array.isArray(r.invoices) && r.invoices.length)
+            ? '<ul class="round-card__invoices">' +
+                r.invoices.map(function (n) {
+                  return '<li>' + escapeHtml(n) + '</li>';
+                }).join('') +
+              '</ul>'
+            : '';
           return '' +
             '<div class="round-card round-card--' + cls + '">' +
               '<p class="round-card__num">Round ' + escapeHtml(r.round) + '</p>' +
@@ -513,6 +523,7 @@
                 '<span>Commitment cutoff</span></p>' +
               '<span class="tag tag--' + cls + '">' + label + '</span>' +
               detail +
+              invoices +
             '</div>';
         }).join('');
 
@@ -523,7 +534,7 @@
         if (fallback) {
           fallback.style.display = 'block';
           fallback.textContent =
-            'The round status is being updated — please check back shortly, ' +
+            'The round status is being updated - please check back shortly, ' +
             'or contact us to ask which round is currently collecting.';
         }
       });

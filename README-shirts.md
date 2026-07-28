@@ -31,12 +31,15 @@ You can edit it two ways:
 ```json
 {
   "campaign": "I Gave 2026",
-  "note": "Orders are batched roughly every 3 weeks over 12 weeks. Commit any time — your shirt goes into the next open round.",
+  "note": "Orders are batched roughly every 3 weeks over 12 weeks. Commit any time, and your shirt goes into the next open round.",
   "rounds": [
-    { "round": 1, "cutoffDate": "2026-07-27", "status": "collecting", "detail": "" },
-    { "round": 2, "cutoffDate": "2026-08-17", "status": "upcoming", "detail": "" },
-    { "round": 3, "cutoffDate": "2026-09-07", "status": "upcoming", "detail": "" },
-    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "" }
+    { "round": 1, "cutoffDate": "2026-07-27", "status": "ordered", "detail": "", "invoices": [
+      "NWK-20260715-134D",
+      "NWK-20260723-5AB2"
+    ] },
+    { "round": 2, "cutoffDate": "2026-08-17", "status": "collecting", "detail": "", "invoices": [] },
+    { "round": 3, "cutoffDate": "2026-09-07", "status": "upcoming", "detail": "", "invoices": [] },
+    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "", "invoices": [] }
   ]
 }
 ```
@@ -49,6 +52,10 @@ You can edit it two ways:
   the round on the page.
 - **`detail`** — an optional short note shown under the round (for example,
   `"Shirts expected the week of Sept 15"`). Leave it as `""` for none.
+- **`invoices`** — the list of invoice numbers included in that round, shown as
+  small grey text at the bottom of the round. Invoice numbers **only**: never
+  add names, dollar amounts, or item counts here. Leave it as `[]` for none.
+  To update a round, replace the whole list (see below).
 - **`note`** — the sentence shown at the top of the Order Status section.
 - **`campaign`** — the campaign name shown as a small heading.
 
@@ -65,14 +72,31 @@ Use one of these exact words (all lowercase):
 | `arrived`     | Shirts are here and ready for pickup.                       |
 | `distributed` | Handed out / complete.                                      |
 
-Typically exactly **one** round is `collecting` at a time. When a round closes,
-change it to `ordered` and change the next round from `upcoming` to
-`collecting`.
+Exactly **one** round should be `collecting` at a time. The green highlight is
+not set anywhere separately: it follows the `collecting` status automatically,
+so moving that one word is all it takes. When a round closes, change it to
+`ordered` and change the next round from `upcoming` to `collecting`.
+
+### Updating a round's invoice numbers
+
+Replace the whole `invoices` list for that round, rather than editing numbers
+one at a time. Keep each number in its own set of `"` quotes, with a comma after
+every one except the last:
+
+```json
+"invoices": [
+  "NWK-20260725-7E80",
+  "NWK-20260726-D182"
+]
+```
+
+Invoice numbers are the only thing that belongs in this list. Do not add
+names, dollar amounts, or item counts: this is a public page.
 
 ### Rules to avoid breaking the file
 
 - Keep every `"` (double quote) and `,` (comma) exactly where they are.
-- Every line inside `rounds` except the **last** one ends with a comma.
+- Inside any list, every entry except the **last** one ends with a comma.
 - `status` must be one of the words in the table above, spelled exactly.
 - If something looks broken after you save, you can paste the file into a free
   "JSON validator" website to find the typo, or compare it to the example above.

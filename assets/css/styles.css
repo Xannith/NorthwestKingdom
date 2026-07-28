@@ -2401,6 +2401,18 @@ tr:hover td { background: var(--color-surface-alt); }
 
 .round-card--collecting .round-card__num { color: var(--color-primary-dark); }
 
+/* Invoice numbers for a placed round; same small muted scale as the
+   "Commitment cutoff" label so it reads as existing card typography */
+.round-card__invoices {
+  list-style: none;
+  margin: var(--spacing-xs) 0 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
 /* Reuse the .tag pill styles for the status badge inside a round card */
 .round-card .tag { margin-top: var(--spacing-xs); }
 

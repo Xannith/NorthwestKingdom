@@ -1,10 +1,20 @@
 {
   "campaign": "I Gave 2026",
-  "note": "Orders are batched roughly every 3 weeks over 12 weeks. Commit any time — your shirt goes into the next open round.",
+  "note": "Orders are batched roughly every 3 weeks over 12 weeks. Commit any time, and your shirt goes into the next open round.",
   "rounds": [
-    { "round": 1, "cutoffDate": "2026-07-27", "status": "collecting", "detail": "" },
-    { "round": 2, "cutoffDate": "2026-08-17", "status": "upcoming", "detail": "" },
-    { "round": 3, "cutoffDate": "2026-09-07", "status": "upcoming", "detail": "" },
-    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "" }
+    { "round": 1, "cutoffDate": "2026-07-27", "status": "ordered", "detail": "", "invoices": [
+      "NWK-20260715-134D",
+      "NWK-20260723-5AB2",
+      "NWK-20260723-5D79",
+      "NWK-20260724-509B",
+      "NWK-20260724-BF38",
+      "NWK-20260724-7621"
+    ] },
+    { "round": 2, "cutoffDate": "2026-08-17", "status": "collecting", "detail": "", "invoices": [
+      "NWK-20260725-7E80",
+      "NWK-20260726-D182"
+    ] },
+    { "round": 3, "cutoffDate": "2026-09-07", "status": "upcoming", "detail": "", "invoices": [] },
+    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "", "invoices": [] }
   ]
 }
