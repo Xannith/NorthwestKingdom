@@ -49,7 +49,7 @@ Open to anyone. Includes:
 Requires authentication. Includes:
 - Dashboard
 - NWK Hub (notices, announcements, directory, history)
-- Governance (MLC framework, TC representation, NWK governance development, records)
+- Governance (MLC framework, NWK fire ring rules, NWK governance development, records)
 - Operations (roads, drainage, maintenance, work parties, land stewardship)
 - Projects (active, proposed, completed, deferred)
 - Calendar (internal planning details)
