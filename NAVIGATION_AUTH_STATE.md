@@ -152,6 +152,26 @@ To eliminate the flash on a specific page, add the identity widget to its `<head
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 ```
 
+### Logged in, but switching to a member page bounces to /login
+
+The CDN role redirects check the **nf_jwt cookie**, not localStorage. The
+Identity server only (re)issues that cookie in the response to an auth API
+call (login or token refresh, sent with `X-Use-Cookie: 1`). A static site
+never makes one after login, so ~1h later the cookie expires while the widget
+still shows "logged in" from localStorage — every `/member/*` request then
+bounces to `/login/?redirect=...`.
+
+Fixed 2026-07-30, two parts:
+
+1. `components.js` `refreshSessionCookie()`: on every page view with a
+   logged-in user, force `user.jwt(true)` — the refresh response's
+   `Set-Cookie` keeps `nf_jwt` current.
+2. `identity.js` login page: now checks `currentUser()` immediately instead
+   of relying only on `on('init')` (same registration race as the old nav
+   bug), and forces a token refresh **before** redirecting back to the
+   `?redirect=` target — otherwise the stale cookie would bounce it straight
+   into the loop detector and land on `/access-denied/`.
+
 ### Role-based redirects fail (/member/* accessible without login)
 
 1. Confirm Identity is **enabled** in Netlify dashboard.

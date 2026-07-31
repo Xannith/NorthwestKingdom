@@ -37,21 +37,46 @@
         btn.addEventListener('click', function () { netlifyIdentity.open('login'); });
       }
 
-      /* On login page: if already logged in redirect away; if not, open modal */
-      netlifyIdentity.on('init', function (user) {
+      var redirecting = false;
+      var modalOpened = false;
+
+      /* If already logged in redirect away; if not, open the login modal.
+         Called with currentUser() immediately (the 'init' event may have fired
+         before this script registered a handler — same race components.js
+         already guards against) and again from on('init') as a backup. */
+      function handleLoginState(user) {
         if (user) {
-          var p = new URLSearchParams(window.location.search);
-          var dest = p.get('redirect');
-          if (dest) {
-            redirectWithLoopDetection(dest);
-          } else {
-            sessionStorage.removeItem(REDIRECT_KEY);
-            window.location.href = DASHBOARD;
-          }
+          if (redirecting) return;
+          redirecting = true;
+          /* Being here logged-in usually means the CDN bounced us because the
+             nf_jwt cookie expired. Force a token refresh first — the Identity
+             server re-issues the cookie in its response — otherwise the
+             redirect back would bounce us straight into the loop detector. */
+          user.jwt(true).then(function () {
+            var p = new URLSearchParams(window.location.search);
+            var dest = p.get('redirect');
+            if (dest) {
+              redirectWithLoopDetection(dest);
+            } else {
+              sessionStorage.removeItem(REDIRECT_KEY);
+              window.location.href = DASHBOARD;
+            }
+          }, function (err) {
+            /* Session is dead (revoked/failed refresh) — let them log in. */
+            console.warn('NWK: token refresh failed:', err);
+            redirecting = false;
+            netlifyIdentity.open('login');
+          });
           return;
         }
-        netlifyIdentity.open('login');
-      });
+        if (!modalOpened) {
+          modalOpened = true;
+          netlifyIdentity.open('login');
+        }
+      }
+
+      handleLoginState(netlifyIdentity.currentUser());
+      netlifyIdentity.on('init', handleLoginState);
 
       /* On login page: after login redirect to ?redirect or dashboard */
       netlifyIdentity.on('login', function () {

@@ -493,6 +493,22 @@
     var user = netlifyIdentity.currentUser() || null;
     log('widget ready, currentUser=' + (user ? user.email : 'null'));
     updateNav(user);
+    refreshSessionCookie(user);
+  }
+
+  /* Netlify's CDN role redirects (/member/*, /admin/*) check the nf_jwt
+     COOKIE, which the Identity server only (re)issues in the response to an
+     auth API call. A static site never makes one after login, so the cookie
+     expires after ~1h while localStorage still says "logged in" — and every
+     member link bounces to /login. Force a token refresh once per page view:
+     the response's Set-Cookie keeps nf_jwt current. */
+  function refreshSessionCookie(user) {
+    if (!user || typeof user.jwt !== 'function') return;
+    user.jwt(true).then(function () {
+      log('token refreshed; nf_jwt cookie current');
+    }, function (err) {
+      console.warn('NWK: token refresh failed; member pages may ask you to log in again.', err);
+    });
   }
 
   function loadIdentityWidget() {
