@@ -14,11 +14,12 @@
       "NWK-20260809-C603",
       "NWK-20260810-D227"
     ] },
-    { "round": 3, "cutoffDate": "2026-09-07", "status": "collecting", "detail": "", "invoices": [
-      "NWK-20260725-7E80",
-      "NWK-20260726-D182",
+    { "round": 3, "cutoffDate": "2026-09-07", "status": "ordered", "detail": "", "invoices": [
       "NWK-20260807-32B4"
     ] },
-    { "round": 4, "cutoffDate": "2026-09-28", "status": "upcoming", "detail": "", "invoices": [] }
+    { "round": 4, "cutoffDate": "2026-09-28", "status": "collecting", "detail": "", "invoices": [
+      "NWK-20260725-7E80",
+      "NWK-20260726-D182"
+    ] }
   ]
 }
