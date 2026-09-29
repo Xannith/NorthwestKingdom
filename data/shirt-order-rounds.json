@@ -17,9 +17,12 @@
     { "round": 3, "cutoffDate": "2026-09-07", "status": "ordered", "detail": "", "invoices": [
       "NWK-20260807-32B4"
     ] },
-    { "round": 4, "cutoffDate": "2026-09-28", "status": "collecting", "detail": "", "invoices": [
-      "NWK-20260725-7E80",
+    { "round": 4, "cutoffDate": "2026-09-28", "status": "ordered", "detail": "", "invoices": [
       "NWK-20260726-D182"
     ] }
-  ]
+  ],
+  "cancelled": { "detail": "Not paid, so not ordered.", "invoices": [
+    "NWK-20260725-7E80",
+    "NWK-20260917-6D5E"
+  ] }
 }

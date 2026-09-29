@@ -481,6 +481,25 @@
     return MONTHS[mi] + ' ' + parseInt(m[3], 10) + ', ' + m[1];
   }
 
+  /* Unpaid invoices dropped from the campaign. Invoice numbers only, same
+     privacy rule as the round cards. Omitted when the list is empty. */
+  function cancelledCard(c) {
+    if (!c || !Array.isArray(c.invoices) || c.invoices.length === 0) return '';
+    var detail = c.detail
+      ? '<p class="round-card__detail">' + escapeHtml(c.detail) + '</p>' : '';
+    return '' +
+      '<div class="round-card round-card--cancelled">' +
+        '<p class="round-card__num">Cancelled Orders</p>' +
+        '<span class="tag tag--cancelled">Unpaid</span>' +
+        detail +
+        '<ul class="round-card__invoices">' +
+          c.invoices.map(function (n) {
+            return '<li>' + escapeHtml(n) + '</li>';
+          }).join('') +
+        '</ul>' +
+      '</div>';
+  }
+
   function renderRounds() {
     var timeline = $('round-timeline');
     var fallback = $('round-status-fallback');
@@ -525,7 +544,7 @@
               detail +
               invoices +
             '</div>';
-        }).join('');
+        }).join('') + cancelledCard(data.cancelled);
 
         if (fallback) fallback.style.display = 'none';
       })

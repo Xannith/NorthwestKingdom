@@ -2422,6 +2422,15 @@ tr:hover td { background: var(--color-surface-alt); }
 .tag--shipped     { background: #fff3e0;                  color: #8a4700; border-color: #ffb74d; }
 .tag--arrived     { background: #eef9ee;                  color: #1a5c1a; border-color: #5cb85c; }
 .tag--distributed { background: var(--color-accent-bg);   color: var(--color-accent); border-color: var(--color-accent-light); }
+.tag--cancelled   { background: var(--color-surface-alt); color: var(--color-text-muted); border-color: var(--color-border); }
+
+/* Cancelled (unpaid) orders sit after the rounds, visibly set apart */
+.round-card--cancelled {
+  background: var(--color-surface-alt);
+  border-style: dashed;
+  border-left-style: solid;
+  box-shadow: none;
+}
 
 /* ── Shirts responsive ────────────────────────────────────── */
 @media (max-width: 700px) {
